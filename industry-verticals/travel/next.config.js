@@ -26,7 +26,10 @@ const nextConfig = {
   // can be served from the Next.js Image Optimization API
   // see https://nextjs.org/docs/app/api-reference/components/image#remotepatterns
   images: {
+    dangerouslyAllowSVG: true,
     remotePatterns: [
+      new URL('https://starter-verticals-v2.sitecoresandbox.cloud/**'),
+      new URL('https://aun-clinic.sitecoresandbox.cloud/**'),
       {
         protocol: 'https',
         hostname: 'edge*.**',
@@ -37,7 +40,21 @@ const nextConfig = {
         hostname: 'xmc-*.**',
         port: '',
       },
+        {
+        protocol: 'https',
+        hostname: 'edge*.**',
+        port: '',
+      },
       {
+        protocol: 'https',
+        hostname: 'xmc-*.**',
+        port: '',
+      },
+      {
+        protocol: 'https',
+        hostname: 'starter-verticals-v2.sitecoresandbox.cloud',
+        port: '',
+      },{
         protocol: 'https',
         hostname: 'starter-verticals.sitecoresandbox.cloud',
         port: '',

@@ -52,6 +52,7 @@ import { getLinkContent, getLinkField, isNavLevel, isNavRootItem, prepareFields 
 import clsx from 'clsx';
 import { isParamEnabled } from '@/helpers/isParamEnabled';
 import { Drawer, DrawerTrigger, DrawerContent, DrawerClose } from '@/shadcn/components/ui/drawer';
+import { sendIdentityEvent, sendAddEvent, sendSearchEvent } from '@/lib/datalayerhelper';
 import { DatePicker } from '@/shadcn/components/ui/date-picker';
 import PreviewSearch_938f3b0320996fc3fe6ab3d953daf2e708e085ca from 'src/components/non-sitecore/search/PreviewSearch';
 import DestinationCard from 'src/components/non-sitecore/DestinationCard';
@@ -427,6 +428,14 @@ const importMap = [
       { name: 'DrawerTrigger', value: DrawerTrigger },
       { name: 'DrawerContent', value: DrawerContent },
       { name: 'DrawerClose', value: DrawerClose },
+    ]
+  },
+  {
+    module: '@/lib/datalayerhelper',
+    exports: [
+      { name: 'sendIdentityEvent', value: sendIdentityEvent },
+      { name: 'sendAddEvent', value: sendAddEvent },
+      { name: 'sendSearchEvent', value: sendSearchEvent },
     ]
   },
   {

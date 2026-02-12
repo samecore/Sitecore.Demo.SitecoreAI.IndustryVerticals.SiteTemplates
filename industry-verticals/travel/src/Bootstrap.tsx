@@ -19,9 +19,9 @@ const Bootstrap = (props: SitecorePageProps): JSX.Element | null => {
     }
 
     const mode = page.mode;
-    if (process.env.NODE_ENV === 'development')
-      console.debug('Browser Events SDK is not initialized in development environment');
-    else if (!mode.isNormal)
+    //if (process.env.NODE_ENV === 'development')
+    //  console.debug('Browser Events SDK is not initialized in development environment');
+    if (!mode.isNormal)
       console.debug('Browser Events SDK is not initialized in edit and preview modes');
     else {
       if (config.api.edge?.clientContextId) {

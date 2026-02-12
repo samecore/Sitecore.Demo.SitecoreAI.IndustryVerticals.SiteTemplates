@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 import { pageView } from '@sitecore-cloudsdk/events/browser';
 import config from 'sitecore.config';
 import { JSX } from 'react';
+import { sendAddEvent, sendSearchEvent } from '@/lib/datalayerhelper';
 
 /**
  * This is the CDP page view component.
@@ -15,14 +16,14 @@ const CdpPageView = (): JSX.Element => {
     page: { layout, siteName, mode },
   } = useSitecore();
   const { route, context } = layout.sitecore;
-
   /**
    * Determines if the page view events should be turned off.
    * IMPORTANT: You should implement based on your cookie consent management solution of choice.
    * By default it is disabled in development mode
    */
   const disabled = () => {
-    return process.env.NODE_ENV === 'development';
+    //return process.env.NODE_ENV === 'development';
+    return false;
   };
 
   useEffect(() => {
@@ -52,6 +53,18 @@ const CdpPageView = (): JSX.Element => {
       pageVariantId,
       language,
     }).catch((e) => console.debug(e));
+
+    // If the route is "Book", send a search event; otherwise, send a page view
+    if (route.name === 'Book') {
+      // If you have a search term available, you can add: searchTerm: <value>
+      sendSearchEvent('SEARCH').catch((e) => console.debug(e));
+    }
+
+    // If the route is "Book", send a search event; otherwise, send a page view
+    if (route.name === 'Addons') {
+      // If you have a search term available, you can add: searchTerm: <value>
+      sendAddEvent('ADD').catch((e) => console.debug(e));
+    }
   }, [mode, route, context.variantId, siteName]);
 
   return <></>;

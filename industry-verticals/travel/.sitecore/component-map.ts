@@ -33,6 +33,7 @@ import * as CardViewSwitcher from 'src/components/non-sitecore/search/CardViewSw
 import * as ArticleHorizontalCard from 'src/components/non-sitecore/search/ArticleHorizontalCard';
 import * as ArticleCard from 'src/components/non-sitecore/search/ArticleCard';
 import * as Navigation from 'src/components/navigation/Navigation';
+import * as Login from 'src/components/login/Login';
 import * as LinkList from 'src/components/link-list/LinkList';
 import * as ItemFinder from 'src/components/item-finder/ItemFinder';
 import * as Image from 'src/components/image/Image';
@@ -83,6 +84,7 @@ export const componentMap = new Map<string, NextjsContentSdkComponent>([
   ['ArticleHorizontalCard', { ...ArticleHorizontalCard }],
   ['ArticleCard', { ...ArticleCard }],
   ['Navigation', { ...Navigation, componentType: 'client' }],
+  ['Login', { ...Login, componentType: 'client' }],
   ['LinkList', { ...LinkList }],
   ['ItemFinder', { ...ItemFinder, componentType: 'client' }],
   ['Image', { ...Image }],

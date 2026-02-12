@@ -28,8 +28,6 @@ const nextConfig = {
   images: {
     dangerouslyAllowSVG: true,
     remotePatterns: [
-      new URL('https://starter-verticals-v2.sitecoresandbox.cloud/**'),
-      new URL('https://aun-clinic.sitecoresandbox.cloud/**'),
       {
         protocol: 'https',
         hostname: 'edge*.**',

@@ -100,6 +100,20 @@ export const Default = ({ params, fields }: loginProps): JSX.Element => {
             </datalist>
           </div>
 
+          {/* Booking number: static field, value is not used in the request */}
+          <div className="login-form-group">
+            <label htmlFor="bookingNumber" className="login-label">
+              Booking number
+            </label>
+            <input
+              type="text"
+              id="bookingNumber"
+              className="login-input"
+              placeholder="Enter booking number"
+              autoComplete="off"
+            />
+          </div>
+
           {/* Submit */}
           <div className="login-submit-row">
             <button className="login-button" type="submit">
@@ -111,10 +125,10 @@ export const Default = ({ params, fields }: loginProps): JSX.Element => {
 
       {/* ---------- Styled-JSX: co-located CSS ---------- */}
       <style jsx>{`
-        /* Dark section background (scoped to this component) */
+        /* White section background with dark text */
         .component.login {
-          background-color: #000;
-          color: #fff;
+          background-color: #fff;
+          color: #1a1a1a;
         }
 
         /* Centered container with narrow width similar to mock */
@@ -131,7 +145,7 @@ export const Default = ({ params, fields }: loginProps): JSX.Element => {
           font-weight: 400;
           line-height: 1.1;
           text-align: center;
-          color: #fff;
+          color: #1a1a1a;
         }
 
         .login-form {
@@ -145,21 +159,21 @@ export const Default = ({ params, fields }: loginProps): JSX.Element => {
           flex-direction: column;
         }
 
-        /* Label styling like the screenshot */
+        /* Label styling */
         .login-label {
           display: block;
           margin-bottom: 8px;
           font-size: 14px;
-          color: rgba(255, 255, 255, 0.9);
+          color: #333;
         }
 
-        /* Inputs: rounded, subtle border, dark fill */
+        /* Inputs: light background, dark text, visible border */
         .login-input {
           width: 100%;
           appearance: none;
-          background-color: #0b0b0b;
-          border: 1.5px solid rgba(255, 255, 255, 0.28);
-          color: #fff;
+          background-color: #fff;
+          border: 1px solid #ccc;
+          color: #1a1a1a;
           border-radius: 10px;
           padding: 14px 16px;
           font-size: 16px;
@@ -171,15 +185,15 @@ export const Default = ({ params, fields }: loginProps): JSX.Element => {
             background-color 0.15s ease;
         }
         .login-input::placeholder {
-          color: rgba(255, 255, 255, 0.6);
+          color: #666;
         }
         .login-input:hover {
-          border-color: rgba(255, 255, 255, 0.45);
+          border-color: rgba(0, 174, 239, 0.5);
         }
         .login-input:focus {
-          border-color: #578c45;
-          box-shadow: 0 0 0 3px rgba(43, 120, 255, 0.25);
-          background-color: #0f0f0f;
+          border-color: #00aeef;
+          box-shadow: 0 0 0 3px rgba(0, 174, 239, 0.25);
+          background-color: #fff;
         }
 
         /* Submit row to create breathing space before CTA */
@@ -187,7 +201,7 @@ export const Default = ({ params, fields }: loginProps): JSX.Element => {
           margin-top: 12px;
         }
 
-        /* Primary CTA: full width green button */
+        /* Primary CTA: flynas teal accent to match header/footer */
         .login-button {
           width: 100%;
           display: inline-flex;
@@ -195,9 +209,9 @@ export const Default = ({ params, fields }: loginProps): JSX.Element => {
           justify-content: center;
           gap: 8px;
 
-          background-color: #578c45;
+          background-color: #00aeef;
           color: #fff;
-          border: 1px solid #578c45;
+          border: 1px solid #00aeef;
           border-radius: 10px;
 
           padding: 14px 18px;
@@ -211,26 +225,26 @@ export const Default = ({ params, fields }: loginProps): JSX.Element => {
             box-shadow 0.15s ease;
         }
         .login-button:hover {
-          background-color: #578c45;
-          border-color: #578c45;
+          background-color: #0099d4;
+          border-color: #0099d4;
         }
         .login-button:active {
           transform: translateY(1px);
         }
         .login-button:focus-visible {
           outline: none;
-          box-shadow: 0 0 0 3px rgba(43, 120, 255, 0.35);
+          box-shadow: 0 0 0 3px rgba(0, 174, 239, 0.35);
         }
 
-        /* Subtle Chromium indicator color for datalist-enabled inputs */
+        /* Datalist dropdown arrow visible on light background */
         :global(input[list])::-webkit-calendar-picker-indicator {
-          filter: invert(1);
-          opacity: 0.75;
+          opacity: 0.6;
         }
 
         /* Optional: hint style if Email field is empty in CMS */
         .is-empty-hint {
-          opacity: 0.7;
+          color: #555;
+          opacity: 0.9;
         }
       `}</style>
     </section>

@@ -56,11 +56,14 @@ export const Default = ({ params, fields }: loginProps): JSX.Element => {
     });
   };
 
-  // Event handler for form submission
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  // Event handler for form submission: send identity, then redirect to Link URL
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // Perform any action you need with the form data (e.g., send it to a server)
-    sendIdentityEvent(formData.email);
+    await sendIdentityEvent(formData.email);
+    const href = fields.Link?.value?.href;
+    if (href) {
+      window.location.href = href;
+    }
   };
 
   return (

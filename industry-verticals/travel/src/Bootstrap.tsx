@@ -2,6 +2,7 @@ import { useEffect, JSX } from 'react';
 import { CloudSDK } from '@sitecore-cloudsdk/core/browser';
 import { SitecorePageProps } from '@sitecore-content-sdk/nextjs';
 import '@sitecore-cloudsdk/events/browser';
+import '@sitecore-cloudsdk/personalize/browser';
 import config from 'sitecore.config';
 
 /**
@@ -34,6 +35,7 @@ const Bootstrap = (props: SitecorePageProps): JSX.Element | null => {
           cookieDomain: window.location.hostname.replace(/^www\./, ''),
         })
           .addEvents()
+          .addPersonalize({ enablePersonalizeCookie: true, webPersonalization: { language: 'en' } }) // Initialize the personalize package
           .initialize();
       } else {
         console.error('Client Edge API settings missing from configuration');

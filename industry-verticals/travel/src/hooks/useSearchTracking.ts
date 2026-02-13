@@ -51,8 +51,7 @@ export function useSearchTracking() {
         }
       });
 
-      router.push(url);
-    },
+      router.push(url.replace('https://skywings.dev/', 'https://flynas-demo.vercel.app/'));    },
     [router]
   );
 

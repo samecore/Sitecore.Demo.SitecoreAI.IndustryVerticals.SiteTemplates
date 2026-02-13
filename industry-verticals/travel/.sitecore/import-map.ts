@@ -8,14 +8,14 @@ import {
 // end of built-in imports
 
 import { Link, Text, useSitecore, RichText, NextImage, Image, DateField, Placeholder, CdpHelper, withDatasourceCheck } from '@sitecore-content-sdk/nextjs';
-import { useMemo, useState, useCallback, useRef, useEffect } from 'react';
+import { useMemo, useEffect, useState, useCallback, useRef } from 'react';
 import React from 'react';
 import Head from 'next/head';
 import { useI18n } from 'next-localization';
 import { faFacebookF, faInstagram, faLinkedinIn, faTwitter, faYoutube, faPinterestP } from '@fortawesome/free-brands-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Link_a258c208ba01265ca0aa9c7abae745cc7141aa63 from 'next/link';
-import { ArrowRight, Share2, ArrowLeft, ChevronLeft, ChevronRight, Phone, Plane, Bed, Camera, Navigation, CalendarDays, Clock, MapPin, Star, Thermometer, LoaderCircle, Check, ChevronDown, X, Search, Users, Menu, Heart, Calendar, User } from 'lucide-react';
+import { ArrowRight, AlertTriangle, Share2, ArrowLeft, ChevronLeft, ChevronRight, Phone, Plane, Bed, Camera, Navigation, CalendarDays, Clock, MapPin, Star, Thermometer, LoaderCircle, Check, ChevronDown, X, Search, Users, Menu, Heart, Calendar, User } from 'lucide-react';
 import * as LucidIcons from 'lucide-react';
 import { LayoutStyles, PromoFlags, HeroBannerStyles, TitleSectionFlags } from '@/types/styleFlags';
 import { newsDateFormatter } from '@/helpers/dateHelper';
@@ -23,6 +23,7 @@ import { useSearchParams, usePathname, useRouter } from 'next/navigation';
 import QuestionsAnswers from 'src/components/non-sitecore/search/QuestionsAnswers';
 import SearchResultsWidget from 'src/components/non-sitecore/search/SearchResultsComponent';
 import { SEARCH_WIDGET_ID, HIGHLIGHTED_ARTICLES_RFKID, DEFAULT_IMG_URL, PREVIEW_WIDGET_ID, HOMEHIGHLIGHTED_WIDGET_ID, DESTINATIONS_WIDGET_ID } from '@/constants/search';
+import { getPersonalizedPromo, sendIdentityEvent, sendAddEvent, sendSearchEvent } from '@/lib/datalayerhelper';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/shadcn/components/ui/dropdown-menu';
 import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
 import { EmailIcon, EmailShareButton, FacebookIcon, FacebookShareButton, LinkedinIcon, LinkedinShareButton, PinterestIcon, PinterestShareButton, TwitterIcon, TwitterShareButton } from 'react-share';
@@ -52,7 +53,6 @@ import { getLinkContent, getLinkField, isNavLevel, isNavRootItem, prepareFields 
 import clsx from 'clsx';
 import { isParamEnabled } from '@/helpers/isParamEnabled';
 import { Drawer, DrawerTrigger, DrawerContent, DrawerClose } from '@/shadcn/components/ui/drawer';
-import { sendIdentityEvent, sendAddEvent, sendSearchEvent } from '@/lib/datalayerhelper';
 import { DatePicker } from '@/shadcn/components/ui/date-picker';
 import PreviewSearch_938f3b0320996fc3fe6ab3d953daf2e708e085ca from 'src/components/non-sitecore/search/PreviewSearch';
 import DestinationCard from 'src/components/non-sitecore/DestinationCard';
@@ -90,10 +90,10 @@ const importMap = [
     module: 'react',
     exports: [
       { name: 'useMemo', value: useMemo },
+      { name: 'useEffect', value: useEffect },
       { name: 'useState', value: useState },
       { name: 'useCallback', value: useCallback },
       { name: 'useRef', value: useRef },
-      { name: 'useEffect', value: useEffect },
       { name: 'default', value: React },
     ]
   },
@@ -136,6 +136,7 @@ const importMap = [
     module: 'lucide-react',
     exports: [
       { name: 'ArrowRight', value: ArrowRight },
+      { name: 'AlertTriangle', value: AlertTriangle },
       { name: 'Share2', value: Share2 },
       { name: 'ArrowLeft', value: ArrowLeft },
       { name: 'ChevronLeft', value: ChevronLeft },
@@ -207,6 +208,15 @@ const importMap = [
       { name: 'PREVIEW_WIDGET_ID', value: PREVIEW_WIDGET_ID },
       { name: 'HOMEHIGHLIGHTED_WIDGET_ID', value: HOMEHIGHLIGHTED_WIDGET_ID },
       { name: 'DESTINATIONS_WIDGET_ID', value: DESTINATIONS_WIDGET_ID },
+    ]
+  },
+  {
+    module: '@/lib/datalayerhelper',
+    exports: [
+      { name: 'getPersonalizedPromo', value: getPersonalizedPromo },
+      { name: 'sendIdentityEvent', value: sendIdentityEvent },
+      { name: 'sendAddEvent', value: sendAddEvent },
+      { name: 'sendSearchEvent', value: sendSearchEvent },
     ]
   },
   {
@@ -428,14 +438,6 @@ const importMap = [
       { name: 'DrawerTrigger', value: DrawerTrigger },
       { name: 'DrawerContent', value: DrawerContent },
       { name: 'DrawerClose', value: DrawerClose },
-    ]
-  },
-  {
-    module: '@/lib/datalayerhelper',
-    exports: [
-      { name: 'sendIdentityEvent', value: sendIdentityEvent },
-      { name: 'sendAddEvent', value: sendAddEvent },
-      { name: 'sendSearchEvent', value: sendSearchEvent },
     ]
   },
   {

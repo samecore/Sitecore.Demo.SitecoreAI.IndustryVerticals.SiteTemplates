@@ -245,6 +245,8 @@ export const Large = ({ params, fields }: ItemFinderProps): JSX.Element => {
   const [returnDate, setReturnDate] = useState<Date | null>(null);
   const [passengers, setPassengers] = useState(1);
   const [showPassengerDropdown, setShowPassengerDropdown] = useState(false);
+  const [children, setChildren] = useState(1);
+  const [showChildrenDropdown, setShowChildrenDropdown] = useState(false);
 
   const passengerOptions = useMemo(
     () => [
@@ -254,6 +256,17 @@ export const Large = ({ params, fields }: ItemFinderProps): JSX.Element => {
       { label: t('4-plus-adults') || '4+ Adults', value: 4 },
     ],
     [t]
+  );
+
+  const childrenOptions = useMemo(
+    () => [
+      { label: '1 Child', value: 1 },
+      { label: '2 Children', value: 2 },
+      { label: '3 Children', value: 3 },
+      { label: '4 Children', value: 4 },
+      { label: '5 Children', value: 5 },
+    ],
+    []
   );
 
   const tripTypeOptions = useMemo(
@@ -304,7 +317,7 @@ export const Large = ({ params, fields }: ItemFinderProps): JSX.Element => {
             </div>
 
             {/* Input Fields Grid */}
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-[1.05fr_1.05fr_1fr_1fr_1.1fr]">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-[1.05fr_1.05fr_1fr_1fr_1fr_1.1fr]">
               {/* From */}
               <div className="flight-input-group">
                 <label className="text-foreground-light/80 mb-1.5 block text-xs font-bold">
@@ -425,6 +438,55 @@ export const Large = ({ params, fields }: ItemFinderProps): JSX.Element => {
                           >
                             <span>{option.label}</span>
                             {passengers === option.value && (
+                              <Check size={16} className="text-foreground ml-2 shrink-0" />
+                            )}
+                          </button>
+                        ))}
+                      </div>
+                    </>
+                  )}
+                </div>
+              </div>
+
+              {/* Children */}
+              <div className="flight-input-group relative">
+                <label className="text-foreground-light/80 mb-1.5 block text-xs font-bold">
+                  {t('children_label') || 'Children'}
+                </label>
+                <div className="relative w-fit max-w-32">
+                  <button
+                    type="button"
+                    onClick={() => setShowChildrenDropdown(!showChildrenDropdown)}
+                    className="border-border text-foreground placeholder:text-foreground-muted w-full truncate rounded-md border bg-transparent py-1.5 pr-8 pl-3 text-left text-xs leading-normal transition-all duration-200 ease-in-out placeholder:text-xs focus:bg-transparent focus:outline-none"
+                  >
+                    {childrenOptions.find((opt) => opt.value === children)?.label ?? '1 Child'}
+                  </button>
+                  <div className="text-foreground-muted pointer-events-none absolute top-1/2 right-3 z-10 -translate-y-1/2">
+                    <ChevronDown size={16} />
+                  </div>
+                  {showChildrenDropdown && (
+                    <>
+                      <div
+                        className="fixed inset-0 z-10"
+                        onClick={() => setShowChildrenDropdown(false)}
+                      />
+                      <div className="border-border bg-background absolute top-full right-0 z-20 mt-1 w-30 rounded-lg border shadow-lg">
+                        {childrenOptions.map((option) => (
+                          <button
+                            key={option.value}
+                            type="button"
+                            onClick={() => {
+                              setChildren(option.value);
+                              setShowChildrenDropdown(false);
+                            }}
+                            className={`hover:bg-background-muted flex w-full items-center justify-between px-4 py-2 text-left text-xs transition-colors ${
+                              children === option.value
+                                ? 'text-foreground bg-transparent'
+                                : 'text-foreground'
+                            }`}
+                          >
+                            <span>{option.label}</span>
+                            {children === option.value && (
                               <Check size={16} className="text-foreground ml-2 shrink-0" />
                             )}
                           </button>

@@ -212,9 +212,9 @@ export const Default = ({ params, fields }: loginProps): JSX.Element => {
           justify-content: center;
           gap: 8px;
 
-          background-color: #00aeef;
+          background-color: #00b7ac;
           color: #fff;
-          border: 1px solid #00aeef;
+          border: 1px solid #00b7ac;
           border-radius: 10px;
 
           padding: 14px 18px;

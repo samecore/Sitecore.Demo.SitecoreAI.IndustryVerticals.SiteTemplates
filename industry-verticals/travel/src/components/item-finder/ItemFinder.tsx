@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useMemo, JSX } from 'react';
+import { useRouter } from 'next/navigation';
 import { Field, useSitecore } from '@sitecore-content-sdk/nextjs';
 import { ComponentProps } from '@/lib/component-props';
 import { useI18n } from 'next-localization';
@@ -24,6 +25,7 @@ interface ItemFinderProps extends ComponentProps {
 
 // Simple variant - Simple search bar
 export const Default = ({ params, fields }: ItemFinderProps): JSX.Element => {
+  const router = useRouter();
   const { page } = useSitecore();
   const { t } = useI18n();
   const { styles, RenderingIdentifier: id } = params;
@@ -32,7 +34,7 @@ export const Default = ({ params, fields }: ItemFinderProps): JSX.Element => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle search logic here
+    router.push('/book');
   };
 
   if (!fields && !isPageEditing) {
@@ -69,6 +71,7 @@ export const Default = ({ params, fields }: ItemFinderProps): JSX.Element => {
 
 // Medium variant - Search with filters (Continent, Type, Activities)
 export const Medium = ({ params, fields }: ItemFinderProps): JSX.Element => {
+  const router = useRouter();
   const { page } = useSitecore();
   const { styles, RenderingIdentifier: id } = params;
   const { t } = useI18n();
@@ -118,7 +121,7 @@ export const Medium = ({ params, fields }: ItemFinderProps): JSX.Element => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle search logic here
+    router.push('/book');
   };
 
   if (!fields && !isPageEditing) {
@@ -234,6 +237,7 @@ export const Medium = ({ params, fields }: ItemFinderProps): JSX.Element => {
 
 // Large variant - Complex form with date pickers
 export const Large = ({ params, fields }: ItemFinderProps): JSX.Element => {
+  const router = useRouter();
   const { page } = useSitecore();
   const { styles, RenderingIdentifier: id } = params;
   const { t } = useI18n();
@@ -280,7 +284,7 @@ export const Large = ({ params, fields }: ItemFinderProps): JSX.Element => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle flight search logic here
+    router.push('/book');
   };
 
   if (!fields && !isPageEditing) {

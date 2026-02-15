@@ -74,7 +74,7 @@ export const Default = ({ params, fields }: loginProps): JSX.Element => {
     >
       <div className="login-shell">
         <h1 id="loginTitle" className="login-title">
-          Login
+          Manage your booking
         </h1>
 
         <form className="login-form" onSubmit={handleSubmit} noValidate>
@@ -228,8 +228,8 @@ export const Default = ({ params, fields }: loginProps): JSX.Element => {
             box-shadow 0.15s ease;
         }
         .login-button:hover {
-          background-color: #0099d4;
-          border-color: #0099d4;
+          background-color: #00b7ac;
+          border-color: #00b7ac;
         }
         .login-button:active {
           transform: translateY(1px);

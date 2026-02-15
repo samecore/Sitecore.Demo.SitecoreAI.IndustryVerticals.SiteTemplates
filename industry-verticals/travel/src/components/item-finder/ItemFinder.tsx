@@ -249,7 +249,7 @@ export const Large = ({ params, fields }: ItemFinderProps): JSX.Element => {
   const [returnDate, setReturnDate] = useState<Date | null>(null);
   const [passengers, setPassengers] = useState(1);
   const [showPassengerDropdown, setShowPassengerDropdown] = useState(false);
-  const [children, setChildren] = useState(1);
+  const [children, setChildren] = useState(0);
   const [showChildrenDropdown, setShowChildrenDropdown] = useState(false);
 
   const passengerOptions = useMemo(
@@ -264,6 +264,7 @@ export const Large = ({ params, fields }: ItemFinderProps): JSX.Element => {
 
   const childrenOptions = useMemo(
     () => [
+      { label: '0 Children', value: 0 },
       { label: '1 Child', value: 1 },
       { label: '2 Children', value: 2 },
       { label: '3 Children', value: 3 },
@@ -463,7 +464,7 @@ export const Large = ({ params, fields }: ItemFinderProps): JSX.Element => {
                     onClick={() => setShowChildrenDropdown(!showChildrenDropdown)}
                     className="border-border text-foreground placeholder:text-foreground-muted w-full truncate rounded-md border bg-transparent py-1.5 pr-8 pl-3 text-left text-xs leading-normal transition-all duration-200 ease-in-out placeholder:text-xs focus:bg-transparent focus:outline-none"
                   >
-                    {childrenOptions.find((opt) => opt.value === children)?.label ?? '1 Child'}
+                    {childrenOptions.find((opt) => opt.value === children)?.label ?? '0 Children'}
                   </button>
                   <div className="text-foreground-muted pointer-events-none absolute top-1/2 right-3 z-10 -translate-y-1/2">
                     <ChevronDown size={16} />

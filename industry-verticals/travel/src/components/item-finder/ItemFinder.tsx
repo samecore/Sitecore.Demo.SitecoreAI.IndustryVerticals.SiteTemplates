@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useState, useMemo, JSX } from 'react';
-import { useRouter } from 'next/navigation';
+import React, { useState, useMemo, useEffect, JSX } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Field, useSitecore } from '@sitecore-content-sdk/nextjs';
 import { ComponentProps } from '@/lib/component-props';
 import { useI18n } from 'next-localization';
@@ -235,16 +235,27 @@ export const Medium = ({ params, fields }: ItemFinderProps): JSX.Element => {
   );
 };
 
+function capitalizeFirst(str: string): string {
+  if (!str) return '';
+  return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+}
+
 // Large variant - Complex form with date pickers
 export const Large = ({ params, fields }: ItemFinderProps): JSX.Element => {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { page } = useSitecore();
   const { styles, RenderingIdentifier: id } = params;
   const { t } = useI18n();
   const isPageEditing = page.mode.isEditing;
+  const toParam = searchParams.get('to');
   const [tripType, setTripType] = useState<'round-trip' | 'one-way' | 'multi-city'>('round-trip');
   const [from, setFrom] = useState('');
   const [to, setTo] = useState('');
+
+  useEffect(() => {
+    if (toParam) setTo(capitalizeFirst(toParam));
+  }, [toParam]);
   const [departureDate, setDepartureDate] = useState<Date | null>(null);
   const [returnDate, setReturnDate] = useState<Date | null>(null);
   const [passengers, setPassengers] = useState(1);

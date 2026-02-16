@@ -1,10 +1,25 @@
+'use client';
+
+import { useRouter } from 'next/navigation';
 import { Text } from '@sitecore-content-sdk/nextjs';
 import { DestinationFields } from '@/types/destination';
 import { Phone, Plane } from 'lucide-react';
 import { useI18n } from 'next-localization';
 
+function capitalizeFirst(str: string): string {
+  if (!str) return '';
+  return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+}
+
 export const DestinationSidebar = ({ destination }: { destination: DestinationFields }) => {
+  const router = useRouter();
   const { t } = useI18n();
+
+  const handleSearchFlights = () => {
+    const name = destination.Title?.value ?? destination.Label?.value ?? '';
+    const to = capitalizeFirst(typeof name === 'string' ? name : String(name));
+    router.push(to ? `/?to=${encodeURIComponent(to)}` : '/');
+  };
 
   return (
     <div className="relative space-y-8">
@@ -30,7 +45,13 @@ export const DestinationSidebar = ({ destination }: { destination: DestinationFi
             <Text field={destination.Airports} />
           </span>
         </div>
-        <button className="btn-primary">{t('search_flights_label') || 'Search Flights'}</button>
+        <button
+          type="button"
+          onClick={handleSearchFlights}
+          className="btn-primary"
+        >
+          {t('search_flights_label') || 'Search Flights'}
+        </button>
         <p className="text-foreground-muted text-center text-xs">
           <Text field={destination.DirectFlights} />
         </p>

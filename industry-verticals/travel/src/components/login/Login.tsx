@@ -74,7 +74,7 @@ export const Default = ({ params, fields }: loginProps): JSX.Element => {
     >
       <div className="login-shell">
         <h1 id="loginTitle" className="login-title">
-          Manage your booking
+          Enter your booking details
         </h1>
 
         <form className="login-form" onSubmit={handleSubmit} noValidate>

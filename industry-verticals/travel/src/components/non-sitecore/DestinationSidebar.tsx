@@ -45,11 +45,7 @@ export const DestinationSidebar = ({ destination }: { destination: DestinationFi
             <Text field={destination.Airports} />
           </span>
         </div>
-        <button
-          type="button"
-          onClick={handleSearchFlights}
-          className="btn-primary"
-        >
+        <button type="button" onClick={handleSearchFlights} className="btn-primary">
           {t('search_flights_label') || 'Search Flights'}
         </button>
         <p className="text-foreground-muted text-center text-xs">

@@ -7,8 +7,11 @@ import {
   LinkField,
   Link,
 } from '@sitecore-content-sdk/nextjs';
+import { LoaderCircle } from 'lucide-react';
 import { ComponentProps } from 'lib/component-props';
 import { sendIdentityEvent } from '@/lib/datalayerhelper';
+
+const REDIRECT_DELAY_MS = 800;
 
 interface Fields {
   Link: LinkField;
@@ -46,6 +49,7 @@ export const Default = ({ params, fields }: loginProps): JSX.Element => {
 
   // State to store form input values
   const [formData, setFormData] = useState({ email: '' });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Event handler for form input changes
   const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -56,13 +60,19 @@ export const Default = ({ params, fields }: loginProps): JSX.Element => {
     });
   };
 
-  // Event handler for form submission: send identity, then redirect to Link URL
+  // Event handler for form submission: send identity, brief delay so event can flush, then redirect
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    await sendIdentityEvent(formData.email);
-    const href = fields.Link?.value?.href;
-    if (href) {
-      window.location.href = href;
+    setIsSubmitting(true);
+    try {
+      await sendIdentityEvent(formData.email);
+      await new Promise((resolve) => setTimeout(resolve, REDIRECT_DELAY_MS));
+      const href = fields.Link?.value?.href;
+      if (href) {
+        window.location.href = href;
+      }
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -119,8 +129,20 @@ export const Default = ({ params, fields }: loginProps): JSX.Element => {
 
           {/* Submit */}
           <div className="login-submit-row">
-            <button className="login-button" type="submit">
-              <Link field={fields.Link} />
+            <button
+              className="login-button"
+              type="submit"
+              disabled={isSubmitting}
+              aria-busy={isSubmitting}
+            >
+              {isSubmitting ? (
+                <>
+                  <LoaderCircle className="login-button-spinner" aria-hidden />
+                  <span>Loading...</span>
+                </>
+              ) : (
+                <Link field={fields.Link} />
+              )}
             </button>
           </div>
         </form>
@@ -237,6 +259,23 @@ export const Default = ({ params, fields }: loginProps): JSX.Element => {
         .login-button:focus-visible {
           outline: none;
           box-shadow: 0 0 0 3px rgba(0, 174, 239, 0.35);
+        }
+        .login-button:disabled {
+          cursor: not-allowed;
+          opacity: 0.85;
+        }
+        .login-button-spinner {
+          width: 1.25rem;
+          height: 1.25rem;
+          animation: login-spin 0.8s linear infinite;
+        }
+        @keyframes login-spin {
+          from {
+            transform: rotate(0deg);
+          }
+          to {
+            transform: rotate(360deg);
+          }
         }
 
         /* Datalist dropdown arrow visible on light background */

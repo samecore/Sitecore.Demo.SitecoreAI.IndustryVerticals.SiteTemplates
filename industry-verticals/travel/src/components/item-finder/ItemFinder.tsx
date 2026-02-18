@@ -296,7 +296,15 @@ export const Large = ({ params, fields }: ItemFinderProps): JSX.Element => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    router.push('/book');
+    if (children >= 1) {
+      router.push('/book');
+    } else if (passengers === 1 && children === 0) {
+      router.push('/book/plan');
+    } else if (passengers > 1 && children === 0) {
+      router.push('/book/details');
+    } else {
+      router.push('/book');
+    }
   };
 
   if (!fields && !isPageEditing) {

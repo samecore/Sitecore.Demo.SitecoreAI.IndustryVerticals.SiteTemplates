@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useMemo, JSX } from 'react';
+import { useRouter } from 'next/navigation';
 import { Field, useSitecore } from '@sitecore-content-sdk/nextjs';
 import { ComponentProps } from '@/lib/component-props';
 import { useI18n } from 'next-localization';
@@ -281,6 +282,7 @@ export const Large = ({ params, fields }: ItemFinderProps): JSX.Element => {
   const { page } = useSitecore();
   const { styles, RenderingIdentifier: id } = params;
   const { t } = useI18n();
+  const router = useRouter();
   const isPageEditing = page.mode.isEditing;
   const [activeTab, setActiveTab] = useState<VacationTab>('vacation');
   const [holidayPackage, setHolidayPackage] = useState('');
@@ -361,6 +363,7 @@ export const Large = ({ params, fields }: ItemFinderProps): JSX.Element => {
         rooms: Number(guestsRooms.split('-')[1]),
       },
     }).catch((e) => console.debug(e));
+    router.push('/book');
   };
 
   if (!fields && !isPageEditing) {

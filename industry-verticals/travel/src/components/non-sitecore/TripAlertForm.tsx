@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { Bell } from 'lucide-react';
-import { identity } from '@sitecore-cloudsdk/events/browser';
+import { identity, event } from '@sitecore-cloudsdk/events/browser';
 
 const inputClass =
   'bg-background ring-foreground/20 focus:ring-foreground/40 !text-foreground placeholder:text-foreground/70 h-9 w-full rounded-md ps-3 ring-1 focus:ring-2 focus:outline-none';
@@ -38,6 +38,14 @@ export const TripAlertForm = ({ destinationName }: { destinationName: string }) 
       lastName: lastName.trim(),
       email: email,
       identifiers: [{ id: email, provider: 'email' }],
+    }).catch((e) => console.debug(e));
+
+    event({
+      type: 'skywings_PRICE_ALERT_SIGNUP',
+      channel: 'WEB',
+      language: 'EN',
+      currency: 'USD',
+      extensionData: { destination: destinationName },
     }).catch((e) => console.debug(e));
 
     setSubmitted(true);

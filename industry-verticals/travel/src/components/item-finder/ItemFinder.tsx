@@ -374,7 +374,7 @@ export const Large = ({ params, fields }: ItemFinderProps): JSX.Element => {
                   className={cn(
                     'cursor-pointer px-5 py-2.5 text-xs font-bold tracking-wide uppercase transition-colors sm:px-7 sm:py-3 sm:text-sm',
                     isActive
-                      ? 'bg-[#FFEB00] text-foreground'
+                      ? 'text-foreground bg-[#FFEB00]'
                       : 'text-foreground hover:bg-background-muted bg-white'
                   )}
                 >
@@ -489,7 +489,7 @@ export const Large = ({ params, fields }: ItemFinderProps): JSX.Element => {
               <div className="flex items-center justify-center p-3 lg:p-2 lg:pr-3">
                 <button
                   type="submit"
-                  className="bg-[#FFEB00] text-foreground hover:bg-[#f5e000] w-full rounded-full px-8 py-3.5 text-sm font-bold tracking-wide uppercase transition-colors focus:ring-2 focus:ring-[#FFEB00]/50 focus:ring-offset-2 focus:outline-none sm:w-auto sm:px-10"
+                  className="text-foreground w-full rounded-full bg-[#FFEB00] px-8 py-3.5 text-sm font-bold tracking-wide uppercase transition-colors hover:bg-[#f5e000] focus:ring-2 focus:ring-[#FFEB00]/50 focus:ring-offset-2 focus:outline-none sm:w-auto sm:px-10"
                 >
                   {fields?.SearchButtonText?.value?.toString() ||
                     t('search_button_text') ||

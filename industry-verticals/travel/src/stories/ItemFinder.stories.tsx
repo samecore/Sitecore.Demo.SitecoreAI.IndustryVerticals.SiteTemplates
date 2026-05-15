@@ -75,7 +75,7 @@ export const Large: Story = {
   render: () => {
     const fields = {
       ...baseFields,
-      SearchButtonText: createTextField('Search Flights'),
+      SearchButtonText: createTextField('Search'),
     };
 
     return (

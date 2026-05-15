@@ -4,14 +4,17 @@ import React, { useState, useMemo, JSX } from 'react';
 import { Field, useSitecore } from '@sitecore-content-sdk/nextjs';
 import { ComponentProps } from '@/lib/component-props';
 import { useI18n } from 'next-localization';
-import { Search, MapPin, Users, Plane, ChevronDown, Check } from 'lucide-react';
+import { format } from 'date-fns';
+import { Search, ChevronDown, Check } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/shadcn/components/ui/dropdown-menu';
-import { DatePicker } from '@/shadcn/components/ui/date-picker';
+import { Calendar } from '@/shadcn/components/ui/calendar';
+import { Popover, PopoverContent, PopoverTrigger } from '@/shadcn/components/ui/popover';
+import { cn } from '@/shadcn/lib/utils';
 
 interface Fields {
   PlaceholderText?: Field<string>;
@@ -232,42 +235,118 @@ export const Medium = ({ params, fields }: ItemFinderProps): JSX.Element => {
   );
 };
 
-// Large variant - Complex form with date pickers
+type VacationTab = 'vacation' | 'experiences' | 'premium-vacation';
+
+interface FinderFieldProps {
+  label: string;
+  displayText: string;
+  isPlaceholder?: boolean;
+  className?: string;
+}
+
+const FinderField = ({
+  label,
+  displayText,
+  isPlaceholder = false,
+  className,
+}: FinderFieldProps) => (
+  <div
+    className={cn(
+      'border-border relative flex min-w-0 flex-1 flex-col justify-center border-b px-5 py-4 last:border-b-0 lg:border-r lg:border-b-0 lg:px-6 lg:py-5 lg:last:border-r-0',
+      className
+    )}
+  >
+    <span className="text-foreground mb-1 text-[10px] font-bold tracking-wider uppercase">
+      {label}
+    </span>
+    <span
+      className={cn(
+        'truncate pr-6 text-left text-base font-medium',
+        isPlaceholder ? 'text-foreground-muted' : 'text-foreground'
+      )}
+    >
+      {displayText}
+    </span>
+    <ChevronDown
+      size={18}
+      className="text-foreground pointer-events-none absolute top-1/2 right-5 -translate-y-1/2 lg:right-6"
+      aria-hidden
+    />
+  </div>
+);
+
+// Large variant - Vacation search with tabs and pill-style fields
 export const Large = ({ params, fields }: ItemFinderProps): JSX.Element => {
   const { page } = useSitecore();
   const { styles, RenderingIdentifier: id } = params;
   const { t } = useI18n();
   const isPageEditing = page.mode.isEditing;
-  const [tripType, setTripType] = useState<'round-trip' | 'one-way' | 'multi-city'>('round-trip');
-  const [from, setFrom] = useState('');
-  const [to, setTo] = useState('');
-  const [departureDate, setDepartureDate] = useState<Date | null>(null);
-  const [returnDate, setReturnDate] = useState<Date | null>(null);
-  const [passengers, setPassengers] = useState(1);
-  const [showPassengerDropdown, setShowPassengerDropdown] = useState(false);
+  const [activeTab, setActiveTab] = useState<VacationTab>('vacation');
+  const [holidayPackage, setHolidayPackage] = useState('');
+  const [checkInDate, setCheckInDate] = useState<Date | null>(null);
+  const [checkOutDate, setCheckOutDate] = useState<Date | null>(null);
+  const [guestsRooms, setGuestsRooms] = useState('2-1');
+  const [datePopoverOpen, setDatePopoverOpen] = useState(false);
 
-  const passengerOptions = useMemo(
+  const tabOptions = useMemo(
     () => [
-      { label: t('1adult') || '1 Adult', value: 1 },
-      { label: t('2adults') || '2 Adults', value: 2 },
-      { label: t('3adults'), value: 3 },
-      { label: t('4-plus-adults') || '4+ Adults', value: 4 },
-    ],
-    [t]
-  );
-
-  const tripTypeOptions = useMemo(
-    () => [
-      { value: 'round-trip' as const, dictKey: 'round_trip_label', defaultLabel: 'Round Trip' },
-      { value: 'one-way' as const, dictKey: 'one_way_label', defaultLabel: 'One Way' },
-      { value: 'multi-city' as const, dictKey: 'multi_city_label', defaultLabel: 'Multi-city' },
+      { value: 'vacation' as const, dictKey: 'vacation_tab_label', defaultLabel: 'Vacation' },
+      {
+        value: 'experiences' as const,
+        dictKey: 'experiences_tab_label',
+        defaultLabel: 'Experiences',
+      },
+      {
+        value: 'premium-vacation' as const,
+        dictKey: 'premium_vacation_tab_label',
+        defaultLabel: 'Premium Vacation',
+      },
     ],
     []
   );
 
+  const packageOptions = useMemo(
+    () => [
+      { label: t('package_beach_escape') || 'Beach Escape', value: 'beach-escape' },
+      { label: t('package_city_break') || 'City Break', value: 'city-break' },
+      { label: t('package_adventure_tour') || 'Adventure Tour', value: 'adventure-tour' },
+      { label: t('package_family_fun') || 'Family Fun', value: 'family-fun' },
+      { label: t('package_luxury_retreat') || 'Luxury Retreat', value: 'luxury-retreat' },
+    ],
+    [t]
+  );
+
+  const guestsRoomsOptions = useMemo(
+    () => [
+      { label: t('guests_1_adult_1_room') || '1 Adult - 1 Room', value: '1-1' },
+      { label: t('guests_2_adults_1_room') || '2 Adults - 1 Room', value: '2-1' },
+      { label: t('guests_2_adults_2_rooms') || '2 Adults - 2 Rooms', value: '2-2' },
+      { label: t('guests_3_adults_1_room') || '3 Adults - 1 Room', value: '3-1' },
+      { label: t('guests_4_adults_2_rooms') || '4 Adults - 2 Rooms', value: '4-2' },
+    ],
+    [t]
+  );
+
+  const selectedPackageLabel = holidayPackage
+    ? packageOptions.find((opt) => opt.value === holidayPackage)?.label
+    : null;
+
+  const selectedGuestsLabel =
+    guestsRoomsOptions.find((opt) => opt.value === guestsRooms)?.label ||
+    t('guests_2_adults_1_room') ||
+    '2 Adults - 1 Room';
+
+  const datesPlaceholder = t('check_in_check_out_placeholder') || 'Check-in - Check-out';
+  const datesDisplay =
+    checkInDate && checkOutDate
+      ? `${format(checkInDate, 'MMM d')} - ${format(checkOutDate, 'MMM d')}`
+      : checkInDate
+        ? `${format(checkInDate, 'MMM d')} - Check-out`
+        : datesPlaceholder;
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle flight search logic here
+    // Handle vacation search logic here
   };
 
   if (!fields && !isPageEditing) {
@@ -276,175 +355,147 @@ export const Large = ({ params, fields }: ItemFinderProps): JSX.Element => {
 
   return (
     <div
-      className={`component item-finder flight-booking-form ${styles || ''}`}
+      className={cn('component item-finder vacation-search-form mx-auto w-full max-w-5xl', styles)}
       id={id || undefined}
     >
       {isPageEditing && !fields && (
         <div className="text-foreground-muted p-4 text-center">[ITEM FINDER - LARGE]</div>
       )}
       {(!isPageEditing || fields) && (
-        <form onSubmit={handleSubmit} className="w-full">
-          <div className="bg-background w-full max-w-full rounded-xl pt-11 pr-6 pb-11 pl-6 shadow-xl">
-            {/* Trip Type Selection */}
-            <div className="mb-6 flex gap-4">
-              {tripTypeOptions.map((option) => (
+        <form onSubmit={handleSubmit} className="flex w-full flex-col items-center gap-4">
+          <div className="bg-background inline-flex overflow-hidden rounded-full shadow-md">
+            {tabOptions.map((option) => {
+              const isActive = activeTab === option.value;
+              return (
                 <button
                   key={option.value}
                   type="button"
-                  onClick={() => setTripType(option.value)}
-                  className={`border-border cursor-pointer rounded-md border px-2.5 py-1.5 text-xs font-semibold transition-all ${
-                    tripType === option.value
-                      ? 'bg-foreground text-background border-foreground shadow-sm'
-                      : 'text-foreground-muted hover:bg-background-muted hover:border-foreground-muted bg-transparent'
-                  }`}
+                  onClick={() => setActiveTab(option.value)}
+                  className={cn(
+                    'cursor-pointer px-5 py-2.5 text-xs font-bold tracking-wide uppercase transition-colors sm:px-7 sm:py-3 sm:text-sm',
+                    isActive
+                      ? 'bg-[#FFEB00] text-foreground'
+                      : 'text-foreground hover:bg-background-muted bg-white'
+                  )}
                 >
                   {t(option.dictKey) || option.defaultLabel}
                 </button>
-              ))}
-            </div>
+              );
+            })}
+          </div>
 
-            {/* Input Fields Grid */}
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-[1.05fr_1.05fr_1fr_1fr_1.1fr]">
-              {/* From */}
-              <div className="flight-input-group">
-                <label className="text-foreground-light/80 mb-1.5 block text-xs font-bold">
-                  {t('from_label') || 'From'}
-                </label>
-                <div className="relative">
-                  <div className="text-foreground-muted absolute top-1/2 left-3 z-10 -translate-y-1/2">
-                    <MapPin size={16} />
-                  </div>
-                  <input
-                    type="text"
-                    value={from}
-                    onChange={(e) => setFrom(e.target.value)}
-                    placeholder={t('departure_city_placeholder') || 'Departure city'}
-                    className="border-border text-foreground placeholder:text-foreground-muted/80 focus:outline-accent-gray/60 w-full rounded-md border bg-transparent py-1.5 pr-3 pl-9 text-sm leading-normal font-semibold placeholder:text-xs focus:outline-3"
+          <div className="bg-background flex w-full flex-col overflow-hidden rounded-3xl shadow-xl lg:flex-row lg:items-stretch lg:rounded-full">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button type="button" className="w-full text-left focus:outline-none">
+                  <FinderField
+                    label={t('choose_holiday_label') || 'Choose your holiday'}
+                    displayText={
+                      selectedPackageLabel || t('pick_package_placeholder') || 'Pick your Package'
+                    }
+                    isPlaceholder={!selectedPackageLabel}
                   />
-                </div>
-              </div>
-
-              {/* To */}
-              <div className="flight-input-group">
-                <label className="text-foreground-light/80 mb-1.5 block text-xs font-bold">
-                  {t('to_label') || 'To'}
-                </label>
-                <div className="relative">
-                  <div className="text-foreground-muted absolute top-1/2 left-3 z-10 -translate-y-1/2">
-                    <MapPin size={16} />
-                  </div>
-                  <input
-                    type="text"
-                    value={to}
-                    onChange={(e) => setTo(e.target.value)}
-                    placeholder={t('destination_city_placeholder') || 'Destination city'}
-                    className="border-border text-foreground placeholder:text-foreground-muted/80 focus:outline-accent-gray/60 w-full rounded-md border bg-transparent py-1.5 pr-3 pl-9 text-sm leading-normal font-semibold placeholder:text-xs focus:outline-3"
-                  />
-                </div>
-              </div>
-
-              {/* Departure Date */}
-              <div className="flight-input-group">
-                <label className="text-foreground-light/80 mb-1.5 block text-xs font-bold">
-                  {t('departure_label') || 'Departure'}
-                </label>
-                <DatePicker
-                  selected={departureDate}
-                  onChange={(date: Date | null) => {
-                    setDepartureDate(date);
-                  }}
-                  placeholderText={t('select_date_placeholder') || 'Select date'}
-                  dateFormat="MMM d, yyyy"
-                  minDate={new Date()}
-                  showIcon={true}
-                  inputClassName="text-sm leading-normal transition-all duration-200 ease-in-out border-border text-foreground placeholder:text-foreground-muted placeholder:text-xs"
-                />
-              </div>
-
-              {/* Return Date */}
-              {tripType === 'round-trip' && (
-                <div className="flight-input-group">
-                  <label className="text-foreground-light/80 mb-1.5 block text-xs font-bold">
-                    {t('return_label') || 'Return'}
-                  </label>
-                  <DatePicker
-                    selected={returnDate}
-                    onChange={(date: Date | null) => {
-                      setReturnDate(date);
-                    }}
-                    placeholderText={t('select_date_placeholder') || 'Select date'}
-                    dateFormat="MMM d, yyyy"
-                    minDate={departureDate || new Date()}
-                    showIcon={true}
-                    inputClassName="text-sm leading-normal transition-all duration-200 ease-in-out border-border text-foreground placeholder:text-foreground-muted placeholder:text-xs"
-                  />
-                </div>
-              )}
-
-              {/* Passengers */}
-              <div className="flight-input-group relative">
-                <label className="text-foreground-light/80 mb-1.5 block text-xs font-bold">
-                  {t('passengers_label') || 'Passengers'}
-                </label>
-                <div className="relative w-fit max-w-32">
-                  <div className="text-foreground-muted absolute top-1/2 left-3 z-10 -translate-y-1/2">
-                    <Users size={16} />
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => setShowPassengerDropdown(!showPassengerDropdown)}
-                    className="border-border text-foreground placeholder:text-foreground-muted w-full truncate rounded-md border bg-transparent py-1.5 pr-8 pl-10 text-left text-xs leading-normal transition-all duration-200 ease-in-out placeholder:text-xs focus:bg-transparent focus:outline-none"
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start" className="min-w-48">
+                {packageOptions.map((option) => (
+                  <DropdownMenuItem
+                    key={option.value}
+                    onClick={() => setHolidayPackage(option.value)}
+                    className="flex items-center justify-between text-sm"
                   >
-                    {passengerOptions.find((opt) => opt.value === passengers)?.label ||
-                      t('1adult') ||
-                      '1 Adult'}
-                  </button>
-                  <div className="text-foreground-muted pointer-events-none absolute top-1/2 right-3 z-10 -translate-y-1/2">
-                    <ChevronDown size={16} />
-                  </div>
-                  {showPassengerDropdown && (
-                    <>
-                      <div
-                        className="fixed inset-0 z-10"
-                        onClick={() => setShowPassengerDropdown(false)}
-                      />
-                      <div className="border-border bg-background absolute top-full right-0 z-20 mt-1 w-30 rounded-lg border shadow-lg">
-                        {passengerOptions.map((option) => (
-                          <button
-                            key={option.value}
-                            type="button"
-                            onClick={() => {
-                              setPassengers(option.value);
-                              setShowPassengerDropdown(false);
-                            }}
-                            className={`hover:bg-background-muted flex w-full items-center justify-between px-4 py-2 text-left text-xs transition-colors ${
-                              passengers === option.value
-                                ? 'text-foreground bg-transparent'
-                                : 'text-foreground'
-                            }`}
-                          >
-                            <span>{option.label}</span>
-                            {passengers === option.value && (
-                              <Check size={16} className="text-foreground ml-2 shrink-0" />
-                            )}
-                          </button>
-                        ))}
-                      </div>
-                    </>
-                  )}
-                </div>
-              </div>
-            </div>
+                    <span>{option.label}</span>
+                    {holidayPackage === option.value && (
+                      <Check size={16} className="ml-2 shrink-0" />
+                    )}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
 
-            {/* Search Button */}
-            <div className="mt-6">
-              <button
-                type="submit"
-                className="bg-accent text-background hover:bg-accent-dark focus:ring-accent flex items-center gap-2 rounded-md px-4 py-2.5 text-sm font-semibold shadow-md transition-all hover:shadow-lg focus:ring-2 focus:ring-offset-2 focus:outline-none"
-              >
-                <Plane size={16} />
-                <span>{t('search_button_text') || 'Search'}</span>
-              </button>
+            <Popover open={datePopoverOpen} onOpenChange={setDatePopoverOpen}>
+              <PopoverTrigger asChild>
+                <button type="button" className="w-full text-left focus:outline-none">
+                  <FinderField
+                    label={t('choose_dates_label') || 'Choose your dates'}
+                    displayText={datesDisplay}
+                    isPlaceholder={!checkInDate}
+                  />
+                </button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-4" align="center">
+                <div className="flex flex-col gap-4 sm:flex-row sm:gap-6">
+                  <div>
+                    <p className="text-foreground mb-2 text-xs font-bold uppercase">
+                      {t('check_in_label') || 'Check-in'}
+                    </p>
+                    <Calendar
+                      selected={checkInDate}
+                      onSelect={(date) => {
+                        setCheckInDate(date);
+                        if (checkOutDate && date && checkOutDate < date) {
+                          setCheckOutDate(null);
+                        }
+                      }}
+                      minDate={new Date()}
+                    />
+                  </div>
+                  <div>
+                    <p className="text-foreground mb-2 text-xs font-bold uppercase">
+                      {t('check_out_label') || 'Check-out'}
+                    </p>
+                    <Calendar
+                      selected={checkOutDate}
+                      onSelect={(date) => {
+                        setCheckOutDate(date);
+                        if (date) {
+                          setDatePopoverOpen(false);
+                        }
+                      }}
+                      minDate={checkInDate || new Date()}
+                    />
+                  </div>
+                </div>
+              </PopoverContent>
+            </Popover>
+
+            <div className="flex w-full flex-col sm:flex-row lg:flex-1">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button type="button" className="w-full flex-1 text-left focus:outline-none">
+                    <FinderField
+                      label={t('choose_guests_rooms_label') || 'Choose guests & rooms'}
+                      displayText={selectedGuestsLabel}
+                      className="lg:border-r-0"
+                    />
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="min-w-48">
+                  {guestsRoomsOptions.map((option) => (
+                    <DropdownMenuItem
+                      key={option.value}
+                      onClick={() => setGuestsRooms(option.value)}
+                      className="flex items-center justify-between text-sm"
+                    >
+                      <span>{option.label}</span>
+                      {guestsRooms === option.value && (
+                        <Check size={16} className="ml-2 shrink-0" />
+                      )}
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+
+              <div className="flex items-center justify-center p-3 lg:p-2 lg:pr-3">
+                <button
+                  type="submit"
+                  className="bg-[#FFEB00] text-foreground hover:bg-[#f5e000] w-full rounded-full px-8 py-3.5 text-sm font-bold tracking-wide uppercase transition-colors focus:ring-2 focus:ring-[#FFEB00]/50 focus:ring-offset-2 focus:outline-none sm:w-auto sm:px-10"
+                >
+                  {fields?.SearchButtonText?.value?.toString() ||
+                    t('search_button_text') ||
+                    'Search'}
+                </button>
+              </div>
             </div>
           </div>
         </form>

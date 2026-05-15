@@ -15,7 +15,7 @@ import { useI18n } from 'next-localization';
 import { faFacebookF, faInstagram, faLinkedinIn, faTwitter, faYoutube, faPinterestP } from '@fortawesome/free-brands-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Link_a258c208ba01265ca0aa9c7abae745cc7141aa63 from 'next/link';
-import { ArrowRight, Share2, ArrowLeft, ChevronLeft, ChevronRight, Phone, Plane, Bed, Camera, Navigation, CalendarDays, Clock, MapPin, Star, Thermometer, LoaderCircle, Check, ChevronDown, X, Search, Users, Menu, Heart, Calendar, User } from 'lucide-react';
+import { ArrowRight, Bell, Share2, ArrowLeft, ChevronLeft, ChevronRight, Phone, Plane, Bed, Camera, Navigation, CalendarDays, Clock, MapPin, Star, Thermometer, LoaderCircle, Check, ChevronDown, X, Search, Users, Menu, Heart, Calendar, User } from 'lucide-react';
 import * as LucidIcons from 'lucide-react';
 import { LayoutStyles, PromoFlags, HeroBannerStyles, TitleSectionFlags } from '@/types/styleFlags';
 import { newsDateFormatter } from '@/helpers/dateHelper';
@@ -23,10 +23,12 @@ import { useSearchParams, usePathname, useRouter } from 'next/navigation';
 import QuestionsAnswers from 'src/components/non-sitecore/search/QuestionsAnswers';
 import SearchResultsWidget from 'src/components/non-sitecore/search/SearchResultsComponent';
 import { SEARCH_WIDGET_ID, HIGHLIGHTED_ARTICLES_RFKID, DEFAULT_IMG_URL, PREVIEW_WIDGET_ID, HOMEHIGHLIGHTED_WIDGET_ID, DESTINATIONS_WIDGET_ID } from '@/constants/search';
+import { identity, pageView } from '@sitecore-cloudsdk/events/browser';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/shadcn/components/ui/dropdown-menu';
 import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
 import { EmailIcon, EmailShareButton, FacebookIcon, FacebookShareButton, LinkedinIcon, LinkedinShareButton, PinterestIcon, PinterestShareButton, TwitterIcon, TwitterShareButton } from 'react-share';
 import { usePagination } from '@/hooks/usePagination';
+import { TripAlertForm } from 'src/components/non-sitecore/TripAlertForm';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/shadcn/components/ui/tabs';
 import Image_5d8ce56058442d94361877e28c501c951a554a6a from 'next/image';
 import { usePreviewSearchActions, useSearchResultsActions, WidgetDataType, useSearchResults, widget, useQuestions, usePreviewSearch, FilterEqual, useSearchResultsSelectedFacets } from '@sitecore-search/react';
@@ -64,7 +66,6 @@ import { DestinationLinkedContent } from 'src/components/non-sitecore/Destinatio
 import client from 'lib/sitecore-client';
 import * as FEAAS from '@sitecore-feaas/clientside/react';
 import nextConfig from 'next.config';
-import { pageView } from '@sitecore-cloudsdk/events/browser';
 import config from 'sitecore.config';
 import { newsDateFormatter as newsDateFormatter_77fef27f114da656b11a70d96f9a0ef7725fc8c6 } from 'src/helpers/dateHelper';
 import { Author } from 'src/components/non-sitecore/Author';
@@ -135,6 +136,7 @@ const importMap = [
     module: 'lucide-react',
     exports: [
       { name: 'ArrowRight', value: ArrowRight },
+      { name: 'Bell', value: Bell },
       { name: 'Share2', value: Share2 },
       { name: 'ArrowLeft', value: ArrowLeft },
       { name: 'ChevronLeft', value: ChevronLeft },
@@ -209,6 +211,13 @@ const importMap = [
     ]
   },
   {
+    module: '@sitecore-cloudsdk/events/browser',
+    exports: [
+      { name: 'identity', value: identity },
+      { name: 'pageView', value: pageView },
+    ]
+  },
+  {
     module: '@/shadcn/components/ui/dropdown-menu',
     exports: [
       { name: 'DropdownMenu', value: DropdownMenu },
@@ -242,6 +251,12 @@ const importMap = [
     module: '@/hooks/usePagination',
     exports: [
       { name: 'usePagination', value: usePagination },
+    ]
+  },
+  {
+    module: 'src/components/non-sitecore/TripAlertForm',
+    exports: [
+      { name: 'TripAlertForm', value: TripAlertForm },
     ]
   },
   {
@@ -499,12 +514,6 @@ const importMap = [
     module: 'next.config',
     exports: [
       { name: 'default', value: nextConfig },
-    ]
-  },
-  {
-    module: '@sitecore-cloudsdk/events/browser',
-    exports: [
-      { name: 'pageView', value: pageView },
     ]
   },
   {

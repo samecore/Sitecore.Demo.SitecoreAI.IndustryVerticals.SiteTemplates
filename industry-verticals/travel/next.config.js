@@ -26,6 +26,8 @@ const nextConfig = {
   // can be served from the Next.js Image Optimization API
   // see https://nextjs.org/docs/app/api-reference/components/image#remotepatterns
   images: {
+    // Bypass Next.js image optimisation locally — avoids timeout when proxying from Content Hub DAM
+    unoptimized: process.env.NODE_ENV === 'development' || process.env.NEXT_PUBLIC_UNOPTIMIZED_IMAGES === 'true',
     remotePatterns: [
       {
         protocol: 'https',

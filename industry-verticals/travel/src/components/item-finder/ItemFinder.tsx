@@ -15,6 +15,7 @@ import {
 import { Calendar } from '@/shadcn/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/shadcn/components/ui/popover';
 import { cn } from '@/shadcn/lib/utils';
+import { event } from '@sitecore-cloudsdk/events/browser';
 
 interface Fields {
   PlaceholderText?: Field<string>;
@@ -346,7 +347,20 @@ export const Large = ({ params, fields }: ItemFinderProps): JSX.Element => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle vacation search logic here
+    event({
+      type: 'HOLIDAY_SEARCH',
+      channel: 'WEB',
+      language: 'EN',
+      currency: 'USD',
+      extensionData: {
+        tab: activeTab,
+        holidayPackage: holidayPackage || null,
+        checkIn: checkInDate ? format(checkInDate, 'yyyy-MM-dd') : null,
+        checkOut: checkOutDate ? format(checkOutDate, 'yyyy-MM-dd') : null,
+        guests: Number(guestsRooms.split('-')[0]),
+        rooms: Number(guestsRooms.split('-')[1]),
+      },
+    }).catch((e) => console.debug(e));
   };
 
   if (!fields && !isPageEditing) {

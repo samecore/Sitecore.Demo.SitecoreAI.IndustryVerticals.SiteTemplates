@@ -41,7 +41,7 @@ export const TripAlertForm = ({ destinationName }: { destinationName: string }) 
     }).catch((e) => console.debug(e));
 
     event({
-      type: 'skywings_PRICE_ALERT_SIGNUP',
+      type: 'PRICE_ALERT_SIGNUP',
       channel: 'WEB',
       language: 'EN',
       currency: 'USD',

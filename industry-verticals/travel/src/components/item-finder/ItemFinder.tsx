@@ -356,11 +356,11 @@ export const Large = ({ params, fields }: ItemFinderProps): JSX.Element => {
       currency: 'USD',
       extensionData: {
         tab: activeTab,
-        holidayPackage: holidayPackage || null,
-        checkIn: checkInDate ? format(checkInDate, 'yyyy-MM-dd') : null,
-        checkOut: checkOutDate ? format(checkOutDate, 'yyyy-MM-dd') : null,
         guests: Number(guestsRooms.split('-')[0]),
         rooms: Number(guestsRooms.split('-')[1]),
+        ...(holidayPackage ? { holidayPackage } : {}),
+        ...(checkInDate ? { checkIn: format(checkInDate, 'yyyy-MM-dd') } : {}),
+        ...(checkOutDate ? { checkOut: format(checkOutDate, 'yyyy-MM-dd') } : {}),
       },
     }).catch((e) => console.debug(e));
     router.push('/book');

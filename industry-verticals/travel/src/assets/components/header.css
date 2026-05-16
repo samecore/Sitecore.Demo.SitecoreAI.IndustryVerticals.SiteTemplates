@@ -7,9 +7,77 @@
 }
 
 .navigation-item {
-  @apply text-foreground hover:text-accent transition-colors hover:no-underline! lg:whitespace-nowrap;
+  @apply text-foreground transition-colors hover:no-underline!;
 }
 
 .navigation-item-primary {
   @apply font-medium in-[.drawer-content]:text-xl;
+}
+
+/* Yas Island–inspired header layout */
+.component.header {
+  @apply border-border/60 border-b;
+
+  .header-left .component.image img {
+    @apply h-auto max-h-14 w-auto min-w-0 lg:max-h-16;
+  }
+
+  /* Utility row (Sign In, Join, etc.) */
+  .header-utilities .link-list ul {
+    @apply flex-row flex-nowrap items-center gap-6 lg:gap-8;
+  }
+
+  .header-utilities .link-list a {
+    @apply text-foreground hover:text-foreground text-[11px] font-semibold tracking-[0.12em] uppercase no-underline hover:no-underline;
+  }
+
+  .header-utilities .link-list li:last-child a {
+    @apply text-foreground hover:text-foreground inline-flex items-center justify-center rounded-full bg-[#ffe100] px-5 py-2.5 text-[11px] font-bold tracking-[0.1em] uppercase transition-colors hover:bg-[#f5d800];
+  }
+
+  /* Main navigation row */
+  .header-nav-row {
+    @apply pt-0;
+  }
+
+  .header-nav-row .component.navigation {
+    @apply leading-none;
+  }
+
+  .header-nav-row .component.navigation nav > ul {
+    @apply flex max-w-none flex-row flex-wrap items-center justify-end! gap-x-5 gap-y-2 px-0 lg:gap-x-8 xl:gap-x-10;
+  }
+
+  .header-nav-row .navigation-item,
+  .header-nav-row .navigation-item-primary {
+    @apply text-foreground hover:text-foreground/80 text-[11px] font-bold tracking-[0.12em] uppercase;
+  }
+
+  .header-nav-row .component.navigation nav > ul > li > div > button,
+  .header-nav-row .component.navigation nav > ul > li > div > a {
+    @apply hover:no-underline;
+  }
+
+  /* Hide duplicate logo from navigation when logo is in header-left */
+  .header-nav-row .component.navigation img {
+    @apply hidden;
+  }
+
+  /* Mobile drawer */
+  .drawer-content .navigation-item,
+  .drawer-content .navigation-item-primary {
+    @apply text-base font-semibold tracking-normal normal-case;
+  }
+
+  .drawer-content .link-list ul {
+    @apply flex-col items-stretch gap-4;
+  }
+
+  .drawer-content .link-list a {
+    @apply text-base font-semibold tracking-normal normal-case;
+  }
+
+  .drawer-content .link-list li:last-child a {
+    @apply w-fit rounded-full bg-[#ffe100] px-6 py-3 text-sm font-bold tracking-[0.08em] uppercase;
+  }
 }

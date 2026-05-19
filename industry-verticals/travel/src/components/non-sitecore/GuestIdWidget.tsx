@@ -55,7 +55,7 @@ export const GuestIdWidget = () => {
   if (!profileId) return null;
 
   return (
-    <div className="fixed bottom-4 right-4 z-50 flex flex-col items-end gap-2">
+    <div className="fixed right-4 bottom-4 z-50 flex flex-col items-end gap-2">
       {expanded && (
         <div className="bg-background border-border w-64 rounded-lg border shadow-lg">
           {/* Header */}
@@ -97,11 +97,7 @@ export const GuestIdWidget = () => {
               className="text-foreground/60 hover:text-foreground hover:bg-background-muted flex w-full items-center justify-center gap-1.5 rounded px-2 py-1.5 text-xs transition-colors disabled:opacity-50"
               title="Clear session cookies and reload as a new anonymous profile"
             >
-              {resetting ? (
-                <Loader2 size={12} className="animate-spin" />
-              ) : (
-                <RotateCcw size={12} />
-              )}
+              {resetting ? <Loader2 size={12} className="animate-spin" /> : <RotateCcw size={12} />}
               Restart as anonymous
             </button>
           </div>

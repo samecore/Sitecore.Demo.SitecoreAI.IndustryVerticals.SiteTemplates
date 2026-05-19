@@ -310,10 +310,12 @@ export const Large = ({ params, fields }: ItemFinderProps): JSX.Element => {
 
   const packageOptions = useMemo(
     () => [
-      { label: t('package_beach_escape') || 'Beach Escape', value: 'beach-escape' },
-      { label: t('package_city_break') || 'City Break', value: 'city-break' },
-      { label: t('package_adventure_tour') || 'Adventure Tour', value: 'adventure-tour' },
-      { label: t('package_family_fun') || 'Family Fun', value: 'family-fun' },
+      { label: t('package_kids_go_free') || 'Kids Fo Free', value: 'kids-go-free' },
+      { label: t('package_stay_and_play') || 'Stay & Play', value: 'stay-play' },
+      {
+        label: t('package_atif_aslam_concert') || 'Atif Aslam Concert',
+        value: 'atif-aslam-concert',
+      },
       { label: t('package_luxury_retreat') || 'Luxury Retreat', value: 'luxury-retreat' },
     ],
     [t]

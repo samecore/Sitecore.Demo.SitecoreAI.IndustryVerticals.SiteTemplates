@@ -7,13 +7,18 @@ import {
   RichText as ContentSdkRichText,
   Image as ContentSdkImage,
   Text as ContentSdkText,
-  DateField,
 } from '@sitecore-content-sdk/nextjs';
 import { Article } from '@/types/article';
-import { newsDateFormatter } from '@/helpers/dateHelper';
-import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import { useI18n } from 'next-localization';
+
+const articleCardImageClass =
+  'relative aspect-[3/4] w-full overflow-hidden rounded-3xl bg-background-muted';
+const articleCardTitleClass =
+  'font-heading text-lg font-bold uppercase leading-snug tracking-tight text-[#002147] lg:text-xl';
+const articleCardDescriptionClass = 'text-base leading-relaxed text-[#586376]';
+const articleCtaClass =
+  'inline-flex w-fit items-center justify-center rounded-full border-[3px] border-[#ffe100] bg-white px-6 py-2.5 text-xs font-bold uppercase tracking-[0.08em] text-[#002147] transition-colors hover:bg-[#fffbeb]';
 
 interface Fields {
   Title: Field<string>;
@@ -48,65 +53,38 @@ export const Default = (props: CarouselProps) => {
         </div>
 
         {/* article list section */}
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
-          {articles.map((article, index) => {
-            return (
-              <div className="info-card flex h-full flex-col overflow-hidden p-0!" key={index}>
-                <div className="relative shrink-0">
-                  <p className="bg-accent text-background absolute top-4 left-4 z-10 max-w-max rounded px-2 py-1 text-xs">
-                    <ContentSdkText field={article.fields.Category.fields.Category} />
-                  </p>
-                  <ContentSdkImage
-                    field={article.fields.Image}
-                    className="h-48 w-full object-cover"
-                  />
-                </div>
-
-                <div className="flex min-h-0 flex-1 flex-col gap-4 p-6">
-                  <div className="flex flex-col gap-4">
-                    <h6 className="font-bold" role="heading" aria-level={3}>
-                      <ContentSdkText field={article.fields.Title} />
-                    </h6>
-                    <div className="text-foreground-muted line-clamp-2">
-                      <ContentSdkRichText field={article.fields.ShortDescription} />
-                    </div>
-                  </div>
-
-                  <div className="mt-auto flex flex-col gap-4">
-                    <div className="flex items-center justify-end">
-                      <DateField
-                        tag="p"
-                        className="news-date text-foreground-muted text-xs"
-                        field={article.fields.PublishedDate}
-                        render={newsDateFormatter}
-                      />
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <p className="text-foreground-muted text-xs">
-                        <ContentSdkText field={article.fields.ReadTime} />
-                      </p>
-                      <p className="text-accent font-semibold">
-                        <Link
-                          href={article.url}
-                          className="text-accent inline-flex items-center text-sm font-medium transition-colors"
-                        >
-                          {t('read_more') || 'Read More'}
-                          <ArrowRight className="h-4 w-5" />
-                        </Link>
-                      </p>
-                    </div>
-                  </div>
-                </div>
+        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+          {articles.map((article, index) => (
+            <article key={index} className="flex h-full flex-col gap-4 text-center">
+              <div className={articleCardImageClass}>
+                <ContentSdkImage
+                  field={article.fields.Image}
+                  className="h-full w-full object-cover"
+                />
               </div>
-            );
-          })}
+
+              <h6 className={articleCardTitleClass} role="heading" aria-level={3}>
+                <ContentSdkText field={article.fields.Title} />
+              </h6>
+
+              <div className={`${articleCardDescriptionClass} line-clamp-3`}>
+                <ContentSdkRichText field={article.fields.ShortDescription} />
+              </div>
+
+              <div className="mt-auto flex justify-center pt-2">
+                <Link href={article.url} className={articleCtaClass}>
+                  {t('read_more') || 'Explore Theme Park'}
+                </Link>
+              </div>
+            </article>
+          ))}
         </div>
 
         {/* cta section */}
         <div className="container mt-12 flex items-center justify-center">
           <ContentSdkLink
             field={props.fields.ExploreLink}
-            className="btn-outline text-foreground max-w-max"
+            className={articleCtaClass}
             aria-label={`link to ${props.fields.ExploreLink?.value?.text || 'explore more'}`}
           />
         </div>

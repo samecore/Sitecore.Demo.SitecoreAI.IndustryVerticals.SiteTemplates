@@ -316,7 +316,10 @@ export const Large = ({ params, fields }: ItemFinderProps): JSX.Element => {
         label: t('package_atif_aslam_concert') || 'Atif Aslam Concert',
         value: 'atif-aslam-concert',
       },
-      { label: t('package_luxury_retreat') || 'Luxury Retreat', value: 'luxury-retreat' },
+      {
+        label: t('package_premium_stay_play') || 'Premium Stay & Play',
+        value: 'premium-stay-play',
+      },
     ],
     [t]
   );

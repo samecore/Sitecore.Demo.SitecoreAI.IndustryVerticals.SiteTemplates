@@ -27,7 +27,7 @@
       "buildCommand": "build",
       "runCommand": "next:start"
     },
-    "demo": {
+    "travel": {
       "path": "./industry-verticals/travel",
       "nodeVersion": "22.11.0",
       "jssDeploymentSecret": "110F1C44A496B45478640DD36F80C18C9",
@@ -36,7 +36,7 @@
       "buildCommand": "build",
       "runCommand": "next:start"
     },
-    "energy": {
+    "demo": {
       "path": "./industry-verticals/energy",
       "nodeVersion": "22.11.0",
       "jssDeploymentSecret": "110F1C44A496B45478640DD36F80C18C9",

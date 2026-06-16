@@ -25,41 +25,55 @@ export const Default = (props: HeaderProps): JSX.Element => {
   }, [pathname, searchParams]);
 
   return (
-    <div className={`component header bg-background border-b ${styles}`} id={id}>
-      <div className="container flex items-center gap-4 py-4 lg:gap-6">
-        <div className="header-block *:shrink max-lg:w-full max-lg:justify-between lg:shrink-0">
+    <div className={`component header ${styles}`} id={id}>
+      <div className="container flex items-center gap-4 py-3 lg:gap-6 lg:py-4">
+        <div className="header-block max-lg:w-full max-lg:justify-between lg:shrink-0">
           <Placeholder name={`header-left-${DynamicPlaceholderId}`} rendering={props.rendering} />
         </div>
-        <div className="hidden! lg:flex! lg:shrink lg:basis-full">
+
+        <div className="hidden! min-w-0 flex-1 lg:flex! lg:justify-center">
           <Placeholder name={`header-nav-${DynamicPlaceholderId}`} rendering={props.rendering} />
         </div>
 
-        {/* Search Button */}
-        <button
-          onClick={() => setIsSearchOpen(!isSearchOpen)}
-          className="text-gray-700 transition-colors hover:text-blue-600"
-        >
-          <Search className="size-5" />
-        </button>
+        <div className="header-block header-block-right hidden! lg:flex! lg:shrink-0">
+          <button
+            type="button"
+            onClick={() => setIsSearchOpen(!isSearchOpen)}
+            aria-label="Open search"
+            aria-expanded={isSearchOpen}
+            className="header-search-trigger"
+          >
+            <span className="header-search-placeholder">AI search</span>
+            <Search className="size-5 shrink-0" />
+          </button>
 
-        <div className="header-block hidden! lg:flex! lg:shrink-0">
           <Placeholder name={`header-right-${DynamicPlaceholderId}`} rendering={props.rendering} />
         </div>
 
         {/* Mobile Drawer Trigger */}
-        <div className="lg:hidden">
+        <div className="flex items-center gap-3 lg:hidden">
+          <button
+            type="button"
+            onClick={() => setIsSearchOpen(!isSearchOpen)}
+            aria-label="Open search"
+            aria-expanded={isSearchOpen}
+            className="header-search-trigger"
+          >
+            <span className="header-search-placeholder">AI search</span>
+            <Search className="size-5 shrink-0" />
+          </button>
           <Drawer direction="left">
             <DrawerTrigger asChild>
               <button
                 type="button"
                 aria-label="Open menu"
-                className="text-foreground hover:text-foreground-light p-2 transition-colors"
+                className="p-2 text-[#3d3d3d] transition-colors hover:text-[#137e43]"
               >
                 <Menu className="h-6 w-6" />
               </button>
             </DrawerTrigger>
 
-            <DrawerContent className="bg-background-accent w-xl! max-w-full! p-5">
+            <DrawerContent className="w-xl! max-w-full! bg-[#f2ede4] p-5">
               <div className="flex h-full flex-col">
                 <div className="mb-14 flex items-center justify-between self-end">
                   <DrawerClose asChild>
@@ -88,7 +102,7 @@ export const Default = (props: HeaderProps): JSX.Element => {
       </div>
 
       {isSearchOpen && (
-        <div className="border-border bg-background absolute top-full right-0 left-0 z-50 border-b shadow-lg">
+        <div className="absolute top-full right-0 left-0 z-50 border-b border-[var(--header-border)] bg-[var(--header-bg)] shadow-lg">
           <div className="mx-auto max-w-7xl px-4 py-4">
             <div className="flex items-center gap-2">
               <PreviewSearch
@@ -98,8 +112,10 @@ export const Default = (props: HeaderProps): JSX.Element => {
               />
 
               <button
+                type="button"
                 onClick={() => setIsSearchOpen(false)}
-                className="text-foreground-muted hover:text-foreground p-3 transition-colors"
+                aria-label="Close search"
+                className="p-3 text-[#3d3d3d] transition-colors hover:text-[#137e43]"
               >
                 <X className="size-5" />
               </button>

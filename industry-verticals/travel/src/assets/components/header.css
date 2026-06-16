@@ -1,15 +1,64 @@
+.component.header {
+  --header-bg: #f2ede4;
+  --header-primary: #137e43;
+  --header-primary-hover: #106b39;
+  --header-text: #3d3d3d;
+  --header-border: #d4cfc6;
+  --header-radius-search: 0.5rem;
+  --header-radius-pill: 9999px;
+  --header-radius-button: 0.25rem;
+
+  @apply relative border-b border-[var(--header-border)] bg-[var(--header-bg)];
+}
+
 .header-block {
-  @apply flex items-center justify-items-start gap-x-6 *:w-auto *:basis-auto;
+  @apply flex items-center justify-items-start gap-x-4 *:w-auto *:basis-auto;
+}
+
+.header-block-right {
+  @apply gap-x-3;
+}
+
+.header-search-trigger {
+  @apply flex h-10 shrink-0 items-center justify-between gap-2 rounded-[var(--header-radius-search)] border border-[var(--header-border)] bg-[var(--header-bg)] px-3 text-[var(--header-text)] transition-colors hover:border-[var(--header-primary)];
+}
+
+.header-search-placeholder {
+  @apply text-sm font-normal text-[var(--header-text)]/70;
+}
+
+.component.header .component.image.image-logo img {
+  @apply h-10 w-auto max-w-[180px] min-w-0;
+}
+
+.component.header .navigation nav > ul {
+  @apply justify-center gap-x-7 xl:gap-x-9;
+}
+
+.component.header .navigation-item {
+  @apply text-sm font-normal text-[var(--header-text)] no-underline transition-colors hover:text-[var(--header-primary)] hover:no-underline!;
+}
+
+.component.header .navigation-item-primary {
+  @apply font-normal;
+}
+
+.component.header .link-list ul {
+  @apply items-center gap-3;
+}
+
+.component.header .link-list li:first-child .navigation-item {
+  @apply rounded-[var(--header-radius-button)] bg-[var(--header-primary)] px-5 py-2.5 text-sm font-semibold text-white no-underline transition-colors hover:bg-[var(--header-primary-hover)] hover:text-white hover:no-underline!;
+}
+
+.component.header .link-list li:last-child:not(:first-child) .navigation-item {
+  @apply rounded-[var(--header-radius-pill)] border border-[var(--header-border)] bg-[var(--header-bg)] px-4 py-2 text-sm font-medium text-[var(--header-text)] no-underline transition-colors hover:border-[var(--header-primary)] hover:text-[var(--header-primary)] hover:no-underline!;
+}
+
+.component.header .link-list li:only-child .navigation-item {
+  @apply rounded-[var(--header-radius-button)] border-0 bg-[var(--header-primary)] px-5 py-2.5 font-semibold text-white hover:bg-[var(--header-primary-hover)] hover:text-white;
 }
 
 .drawer-heading {
   @apply mt-7 mb-18 text-2xl;
-}
-
-.navigation-item {
-  @apply text-foreground hover:text-accent transition-colors hover:no-underline! lg:whitespace-nowrap;
-}
-
-.navigation-item-primary {
-  @apply font-medium in-[.drawer-content]:text-xl;
 }

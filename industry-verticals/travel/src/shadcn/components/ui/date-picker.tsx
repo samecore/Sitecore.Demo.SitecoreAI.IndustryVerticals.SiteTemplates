@@ -17,6 +17,10 @@ export interface DatePickerProps {
   maxDate?: Date;
   showIcon?: boolean;
   inputClassName?: string;
+  label?: string;
+  iconPosition?: 'left' | 'right';
+  triggerClassName?: string;
+  iconClassName?: string;
 }
 
 export function DatePicker({
@@ -28,6 +32,10 @@ export function DatePicker({
   maxDate,
   showIcon = true,
   inputClassName,
+  label,
+  iconPosition = 'left',
+  triggerClassName,
+  iconClassName,
 }: DatePickerProps) {
   const [open, setOpen] = React.useState(false);
 
@@ -38,6 +46,9 @@ export function DatePicker({
     setOpen(false);
   };
 
+  const displayValue = selected ? format(selected, dateFormat) : placeholderText;
+  const isStacked = Boolean(label);
+
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
@@ -45,25 +56,58 @@ export function DatePicker({
           type="button"
           className={cn(
             'border-border text-foreground placeholder:text-foreground-muted hover:bg-background-muted relative w-full rounded-md border bg-transparent py-1.5 pr-3 text-left text-xs leading-normal transition-all duration-200 ease-in-out focus:outline-none',
-            showIcon ? 'pl-9' : 'pl-3',
-            !selected && 'text-foreground-muted',
+            showIcon && iconPosition === 'left' ? 'pl-9' : 'pl-3',
+            showIcon && iconPosition === 'right' && 'pr-10',
+            !selected && !isStacked && 'text-foreground-muted',
+            triggerClassName,
             inputClassName
           )}
         >
-          {showIcon && (
-            <div className="text-foreground-muted pointer-events-none absolute top-1/2 left-3 z-10 -translate-y-1/2">
+          {showIcon && iconPosition === 'left' && (
+            <div
+              className={cn(
+                'text-foreground-muted pointer-events-none absolute top-1/2 left-3 z-10 -translate-y-1/2',
+                iconClassName
+              )}
+            >
               <CalendarIcon size={16} />
             </div>
           )}
-          <span
-            className={cn(
-              showIcon ? 'pl-2' : '',
-              !selected && 'text-xs font-semibold',
-              selected && 'text-xs'
-            )}
-          >
-            {selected ? format(selected, dateFormat) : placeholderText}
-          </span>
+
+          {isStacked ? (
+            <div className="flight-booking-field-trigger-content">
+              <span className="flight-booking-field-label">{label}</span>
+              <span
+                className={cn(
+                  'flight-booking-field-value',
+                  !selected && 'flight-booking-field-value-muted'
+                )}
+              >
+                {displayValue}
+              </span>
+            </div>
+          ) : (
+            <span
+              className={cn(
+                showIcon && iconPosition === 'left' ? 'pl-2' : '',
+                !selected && 'text-xs font-semibold',
+                selected && 'text-xs'
+              )}
+            >
+              {displayValue}
+            </span>
+          )}
+
+          {showIcon && iconPosition === 'right' && (
+            <div
+              className={cn(
+                'flight-booking-field-trigger-icon pointer-events-none absolute top-1/2 right-4 z-10 -translate-y-1/2',
+                iconClassName
+              )}
+            >
+              <CalendarIcon size={18} />
+            </div>
+          )}
         </button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0" align="center">

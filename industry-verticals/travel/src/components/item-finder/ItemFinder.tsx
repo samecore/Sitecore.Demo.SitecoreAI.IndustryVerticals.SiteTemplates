@@ -4,7 +4,14 @@ import React, { useState, useMemo, JSX } from 'react';
 import { Field, useSitecore } from '@sitecore-content-sdk/nextjs';
 import { ComponentProps } from '@/lib/component-props';
 import { useI18n } from 'next-localization';
-import { Search, MapPin, Users, Plane, ChevronDown, Check } from 'lucide-react';
+import {
+  Search,
+  PlaneTakeoff,
+  PlaneLanding,
+  ChevronDown,
+  Check,
+  ArrowLeftRight,
+} from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -270,6 +277,14 @@ export const Large = ({ params, fields }: ItemFinderProps): JSX.Element => {
     // Handle flight search logic here
   };
 
+  const handleSwapLocations = () => {
+    setFrom(to);
+    setTo(from);
+  };
+
+  const selectedPassengerLabel =
+    passengerOptions.find((opt) => opt.value === passengers)?.label || t('1adult') || '1 Adult';
+
   if (!fields && !isPageEditing) {
     return <></>;
   }
@@ -284,166 +299,154 @@ export const Large = ({ params, fields }: ItemFinderProps): JSX.Element => {
       )}
       {(!isPageEditing || fields) && (
         <form onSubmit={handleSubmit} className="w-full">
-          <div className="bg-background w-full max-w-full rounded-xl pt-11 pr-6 pb-11 pl-6 shadow-xl">
-            {/* Trip Type Selection */}
-            <div className="mb-6 flex gap-4">
+          <div className="flight-booking-card">
+            <div className="flight-booking-trip-types">
               {tripTypeOptions.map((option) => (
-                <button
-                  key={option.value}
-                  type="button"
-                  onClick={() => setTripType(option.value)}
-                  className={`border-border cursor-pointer rounded-md border px-2.5 py-1.5 text-xs font-semibold transition-all ${
-                    tripType === option.value
-                      ? 'bg-foreground text-background border-foreground shadow-sm'
-                      : 'text-foreground-muted hover:bg-background-muted hover:border-foreground-muted bg-transparent'
-                  }`}
-                >
-                  {t(option.dictKey) || option.defaultLabel}
-                </button>
+                <label key={option.value} className="flight-booking-radio">
+                  <input
+                    type="radio"
+                    name="trip-type"
+                    value={option.value}
+                    checked={tripType === option.value}
+                    onChange={() => setTripType(option.value)}
+                  />
+                  <span className="flight-booking-radio-indicator" aria-hidden="true" />
+                  <span>{t(option.dictKey) || option.defaultLabel}</span>
+                </label>
               ))}
             </div>
 
-            {/* Input Fields Grid */}
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-[1.05fr_1.05fr_1fr_1fr_1.1fr]">
-              {/* From */}
-              <div className="flight-input-group">
-                <label className="text-foreground-light/80 mb-1.5 block text-xs font-bold">
-                  {t('from_label') || 'From'}
-                </label>
-                <div className="relative">
-                  <div className="text-foreground-muted absolute top-1/2 left-3 z-10 -translate-y-1/2">
-                    <MapPin size={16} />
-                  </div>
-                  <input
-                    type="text"
-                    value={from}
-                    onChange={(e) => setFrom(e.target.value)}
-                    placeholder={t('departure_city_placeholder') || 'Departure city'}
-                    className="border-border text-foreground placeholder:text-foreground-muted/80 focus:outline-accent-gray/60 w-full rounded-md border bg-transparent py-1.5 pr-3 pl-9 text-sm leading-normal font-semibold placeholder:text-xs focus:outline-3"
-                  />
-                </div>
-              </div>
-
-              {/* To */}
-              <div className="flight-input-group">
-                <label className="text-foreground-light/80 mb-1.5 block text-xs font-bold">
-                  {t('to_label') || 'To'}
-                </label>
-                <div className="relative">
-                  <div className="text-foreground-muted absolute top-1/2 left-3 z-10 -translate-y-1/2">
-                    <MapPin size={16} />
-                  </div>
-                  <input
-                    type="text"
-                    value={to}
-                    onChange={(e) => setTo(e.target.value)}
-                    placeholder={t('destination_city_placeholder') || 'Destination city'}
-                    className="border-border text-foreground placeholder:text-foreground-muted/80 focus:outline-accent-gray/60 w-full rounded-md border bg-transparent py-1.5 pr-3 pl-9 text-sm leading-normal font-semibold placeholder:text-xs focus:outline-3"
-                  />
-                </div>
-              </div>
-
-              {/* Departure Date */}
-              <div className="flight-input-group">
-                <label className="text-foreground-light/80 mb-1.5 block text-xs font-bold">
-                  {t('departure_label') || 'Departure'}
-                </label>
-                <DatePicker
-                  selected={departureDate}
-                  onChange={(date: Date | null) => {
-                    setDepartureDate(date);
-                  }}
-                  placeholderText={t('select_date_placeholder') || 'Select date'}
-                  dateFormat="MMM d, yyyy"
-                  minDate={new Date()}
-                  showIcon={true}
-                  inputClassName="text-sm leading-normal transition-all duration-200 ease-in-out border-border text-foreground placeholder:text-foreground-muted placeholder:text-xs"
+            <div className="flight-booking-locations">
+              <div className="flight-booking-field flight-booking-field-location">
+                <input
+                  type="text"
+                  value={from}
+                  onChange={(e) => setFrom(e.target.value)}
+                  placeholder={t('from_label') || 'From'}
+                  aria-label={t('from_label') || 'From'}
                 />
+                <PlaneTakeoff className="flight-booking-field-icon" size={20} aria-hidden="true" />
               </div>
 
-              {/* Return Date */}
-              {tripType === 'round-trip' && (
-                <div className="flight-input-group">
-                  <label className="text-foreground-light/80 mb-1.5 block text-xs font-bold">
-                    {t('return_label') || 'Return'}
-                  </label>
-                  <DatePicker
-                    selected={returnDate}
-                    onChange={(date: Date | null) => {
-                      setReturnDate(date);
-                    }}
-                    placeholderText={t('select_date_placeholder') || 'Select date'}
-                    dateFormat="MMM d, yyyy"
-                    minDate={departureDate || new Date()}
-                    showIcon={true}
-                    inputClassName="text-sm leading-normal transition-all duration-200 ease-in-out border-border text-foreground placeholder:text-foreground-muted placeholder:text-xs"
-                  />
-                </div>
-              )}
+              <button
+                type="button"
+                onClick={handleSwapLocations}
+                className="flight-booking-swap"
+                aria-label={t('swap_locations_label') || 'Swap locations'}
+              >
+                <ArrowLeftRight size={18} />
+              </button>
 
-              {/* Passengers */}
-              <div className="flight-input-group relative">
-                <label className="text-foreground-light/80 mb-1.5 block text-xs font-bold">
-                  {t('passengers_label') || 'Passengers'}
-                </label>
-                <div className="relative w-fit max-w-32">
-                  <div className="text-foreground-muted absolute top-1/2 left-3 z-10 -translate-y-1/2">
-                    <Users size={16} />
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => setShowPassengerDropdown(!showPassengerDropdown)}
-                    className="border-border text-foreground placeholder:text-foreground-muted w-full truncate rounded-md border bg-transparent py-1.5 pr-8 pl-10 text-left text-xs leading-normal transition-all duration-200 ease-in-out placeholder:text-xs focus:bg-transparent focus:outline-none"
-                  >
-                    {passengerOptions.find((opt) => opt.value === passengers)?.label ||
-                      t('1adult') ||
-                      '1 Adult'}
-                  </button>
-                  <div className="text-foreground-muted pointer-events-none absolute top-1/2 right-3 z-10 -translate-y-1/2">
-                    <ChevronDown size={16} />
-                  </div>
-                  {showPassengerDropdown && (
-                    <>
-                      <div
-                        className="fixed inset-0 z-10"
-                        onClick={() => setShowPassengerDropdown(false)}
-                      />
-                      <div className="border-border bg-background absolute top-full right-0 z-20 mt-1 w-30 rounded-lg border shadow-lg">
-                        {passengerOptions.map((option) => (
-                          <button
-                            key={option.value}
-                            type="button"
-                            onClick={() => {
-                              setPassengers(option.value);
-                              setShowPassengerDropdown(false);
-                            }}
-                            className={`hover:bg-background-muted flex w-full items-center justify-between px-4 py-2 text-left text-xs transition-colors ${
-                              passengers === option.value
-                                ? 'text-foreground bg-transparent'
-                                : 'text-foreground'
-                            }`}
-                          >
-                            <span>{option.label}</span>
-                            {passengers === option.value && (
-                              <Check size={16} className="text-foreground ml-2 shrink-0" />
-                            )}
-                          </button>
-                        ))}
-                      </div>
-                    </>
-                  )}
-                </div>
+              <div className="flight-booking-field flight-booking-field-location">
+                <input
+                  type="text"
+                  value={to}
+                  onChange={(e) => setTo(e.target.value)}
+                  placeholder={t('to_label') || 'To'}
+                  aria-label={t('to_label') || 'To'}
+                />
+                <PlaneLanding className="flight-booking-field-icon" size={20} aria-hidden="true" />
               </div>
             </div>
 
-            {/* Search Button */}
-            <div className="mt-6">
-              <button
-                type="submit"
-                className="bg-accent text-background hover:bg-accent-dark focus:ring-accent flex items-center gap-2 rounded-md px-4 py-2.5 text-sm font-semibold shadow-md transition-all hover:shadow-lg focus:ring-2 focus:ring-offset-2 focus:outline-none"
-              >
-                <Plane size={16} />
-                <span>{t('search_button_text') || 'Search'}</span>
+            <div
+              className={`flight-booking-details ${tripType === 'round-trip' ? 'md:grid-cols-3' : 'md:grid-cols-2'}`}
+            >
+              <DatePicker
+                selected={departureDate}
+                onChange={(date: Date | null) => {
+                  setDepartureDate(date);
+                }}
+                label={t('departure_label') || 'Departing'}
+                placeholderText={t('select_date_placeholder') || 'Select date'}
+                dateFormat="EEE, MMM d, yyyy"
+                minDate={new Date()}
+                showIcon={true}
+                iconPosition="right"
+                triggerClassName="flight-booking-field-trigger border-0 shadow-none"
+              />
+
+              {tripType === 'round-trip' && (
+                <DatePicker
+                  selected={returnDate}
+                  onChange={(date: Date | null) => {
+                    setReturnDate(date);
+                  }}
+                  label={t('return_label') || 'Returning'}
+                  placeholderText={t('select_date_placeholder') || 'Select date'}
+                  dateFormat="EEE, MMM d, yyyy"
+                  minDate={departureDate || new Date()}
+                  showIcon={true}
+                  iconPosition="right"
+                  triggerClassName="flight-booking-field-trigger border-0 shadow-none"
+                />
+              )}
+
+              <div className="relative">
+                <button
+                  type="button"
+                  onClick={() => setShowPassengerDropdown(!showPassengerDropdown)}
+                  className="flight-booking-field-trigger"
+                  aria-expanded={showPassengerDropdown}
+                  aria-haspopup="listbox"
+                >
+                  <div className="flight-booking-field-trigger-content">
+                    <span className="flight-booking-field-label">
+                      {t('passengers_label') || 'Passenger and class'}
+                    </span>
+                    <span className="flight-booking-field-value">{selectedPassengerLabel}</span>
+                  </div>
+                  <ChevronDown
+                    className="flight-booking-field-trigger-icon"
+                    size={18}
+                    aria-hidden="true"
+                  />
+                </button>
+
+                {showPassengerDropdown && (
+                  <>
+                    <div
+                      className="fixed inset-0 z-10"
+                      onClick={() => setShowPassengerDropdown(false)}
+                      aria-hidden="true"
+                    />
+                    <div
+                      role="listbox"
+                      className="absolute top-full right-0 z-20 mt-1 min-w-full rounded-md border border-[#e8e8e8] bg-white py-1 shadow-lg"
+                    >
+                      {passengerOptions.map((option) => (
+                        <button
+                          key={option.value}
+                          type="button"
+                          role="option"
+                          aria-selected={passengers === option.value}
+                          onClick={() => {
+                            setPassengers(option.value);
+                            setShowPassengerDropdown(false);
+                          }}
+                          className="flex w-full items-center justify-between px-4 py-2.5 text-left text-sm text-[var(--flight-text)] transition-colors hover:bg-[#f2f2f2]"
+                        >
+                          <span>{option.label}</span>
+                          {passengers === option.value && (
+                            <Check
+                              size={16}
+                              className="ml-2 shrink-0 text-[var(--flight-primary)]"
+                            />
+                          )}
+                        </button>
+                      ))}
+                    </div>
+                  </>
+                )}
+              </div>
+            </div>
+
+            <div className="flight-booking-actions">
+              <button type="submit" className="flight-booking-submit">
+                <Search size={18} aria-hidden="true" />
+                <span>
+                  {fields?.SearchButtonText?.value || t('search_button_text') || 'Search Flights'}
+                </span>
               </button>
             </div>
           </div>

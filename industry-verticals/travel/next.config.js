@@ -39,6 +39,11 @@ const nextConfig = {
       },
       {
         protocol: 'https',
+        hostname: 'skywings-mea.sitecoresandbox.cloud',
+        port: '',
+      },
+      {
+        protocol: 'https',
         hostname: 'starter-verticals-2.sitecoresandbox.cloud',
         port: '',
       },

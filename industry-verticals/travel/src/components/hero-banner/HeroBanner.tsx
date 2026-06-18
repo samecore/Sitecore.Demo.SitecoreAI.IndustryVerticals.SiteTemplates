@@ -89,7 +89,10 @@ export const CenteredLarge = ({ params, fields, rendering }: HeroBannerProps) =>
   }
 
   return (
-    <div className={`component hero-banner ${styles} relative flex items-center`} id={id}>
+    <div
+      className={`component hero-banner hero-banner--submerged-search ${styles} relative`}
+      id={id}
+    >
       {/* Background Media */}
       <div className="absolute inset-0 z-0">
         {!isPageEditing && fields?.Video?.value?.src ? (
@@ -106,25 +109,26 @@ export const CenteredLarge = ({ params, fields, rendering }: HeroBannerProps) =>
         ) : (
           <ContentSdkImage field={fields.Image} className="h-full w-full object-cover" priority />
         )}
+        <div className="hero-banner__overlay-bottom absolute inset-0" aria-hidden="true" />
       </div>
 
-      {/* Content Container */}
-      <div className="relative z-10 w-full">
-        <div className="container mx-auto flex flex-col items-center justify-center px-4 py-16">
-          {/* Title */}
+      {/* Title and description */}
+      <div className="hero-banner__content">
+        <div className="container mx-auto flex flex-col items-center px-4 pt-14 pb-4 md:pt-20 md:pb-6">
           <h1 className="text-background text-center">
             <ContentSdkText field={fields.Title} />
           </h1>
 
-          {/* Description/Tagline */}
-          <div className="text-background/80 mt-4 text-center text-xl">
+          <div className="text-background/80 mt-4 max-w-3xl text-center text-lg md:text-xl">
             <ContentSdkRichText field={fields.Description} className="text-center" />
           </div>
+        </div>
+      </div>
 
-          {/* Flight Search Form Placeholder */}
-          <div className="mt-8 w-full max-w-5xl px-4">
-            <Placeholder name={flightSearchPlaceholderKey} rendering={rendering} />
-          </div>
+      {/* Flight search submerged at the bottom edge */}
+      <div className="hero-banner__search container mx-auto px-4">
+        <div className="hero-banner__search-inner">
+          <Placeholder name={flightSearchPlaceholderKey} rendering={rendering} />
         </div>
       </div>
     </div>

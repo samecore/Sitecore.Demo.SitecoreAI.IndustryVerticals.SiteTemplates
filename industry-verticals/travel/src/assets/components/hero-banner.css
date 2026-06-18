@@ -1,0 +1,31 @@
+.hero-banner--submerged-search {
+  @apply relative overflow-visible;
+  min-height: clamp(24rem, 52vh, 38rem);
+  padding-bottom: clamp(2rem, 4vw, 3rem);
+  margin-bottom: clamp(7rem, 12vw, 10rem);
+}
+
+.hero-banner--submerged-search .hero-banner__overlay-bottom {
+  background: linear-gradient(
+    180deg,
+    rgb(0 0 0 / 0%) 38%,
+    rgb(0 42 24 / 45%) 72%,
+    rgb(0 30 18 / 82%) 100%
+  );
+}
+
+.hero-banner__content {
+  @apply relative z-10 w-full;
+}
+
+.hero-banner__search {
+  @apply absolute right-0 bottom-0 left-0 z-20 translate-y-1/2;
+}
+
+.hero-banner__search-inner {
+  @apply mx-auto w-full max-w-5xl;
+}
+
+.hero-banner__search .flight-booking-card {
+  @apply rounded-xl border-white/20 shadow-2xl;
+}

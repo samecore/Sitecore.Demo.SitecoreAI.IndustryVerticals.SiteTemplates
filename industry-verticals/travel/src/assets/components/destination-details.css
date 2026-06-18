@@ -1,0 +1,33 @@
+.component.destination-details {
+  --destination-accent: #007a48;
+  --destination-accent-hover: #00663c;
+  --destination-accent-light: #e8f5ee;
+}
+
+.component.destination-details .text-accent {
+  @apply text-[var(--destination-accent)];
+}
+
+.component.destination-details .bg-accent {
+  @apply bg-[var(--destination-accent)];
+}
+
+.component.destination-details .bg-background-accent {
+  @apply bg-[var(--destination-accent-light)];
+}
+
+.component.destination-details .info-card .info-card-title svg {
+  @apply text-[var(--destination-accent)];
+}
+
+.component.destination-details .rich-text.ck-content ul li::marker {
+  color: var(--destination-accent);
+}
+
+.component.destination-details .btn-primary {
+  @apply bg-[var(--destination-accent)] hover:bg-[var(--destination-accent-hover)];
+}
+
+.component.destination-details a.text-accent:hover {
+  color: var(--destination-accent-hover);
+}

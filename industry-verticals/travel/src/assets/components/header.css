@@ -1,7 +1,7 @@
 .component.header {
   --header-bg: #f2ede4;
-  --header-primary: #137e43;
-  --header-primary-hover: #106b39;
+  --header-primary: #007a48;
+  --header-primary-hover: #00663c;
   --header-text: #3d3d3d;
   --header-border: #d4cfc6;
   --header-radius-search: 0.5rem;

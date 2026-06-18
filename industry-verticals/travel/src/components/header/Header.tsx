@@ -67,7 +67,7 @@ export const Default = (props: HeaderProps): JSX.Element => {
               <button
                 type="button"
                 aria-label="Open menu"
-                className="p-2 text-[#3d3d3d] transition-colors hover:text-[#137e43]"
+                className="p-2 text-[#3d3d3d] transition-colors hover:text-[#007a48]"
               >
                 <Menu className="h-6 w-6" />
               </button>
@@ -115,7 +115,7 @@ export const Default = (props: HeaderProps): JSX.Element => {
                 type="button"
                 onClick={() => setIsSearchOpen(false)}
                 aria-label="Close search"
-                className="p-3 text-[#3d3d3d] transition-colors hover:text-[#137e43]"
+                className="p-3 text-[#3d3d3d] transition-colors hover:text-[#007a48]"
               >
                 <X className="size-5" />
               </button>

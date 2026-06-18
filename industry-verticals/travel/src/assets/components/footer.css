@@ -1,0 +1,103 @@
+.component.footer {
+  --footer-accent: #007a48;
+  --footer-text: #1f1f1f;
+  --footer-text-muted: #6b6b6b;
+  --footer-border: #e5e5e5;
+
+  @apply border-t border-[var(--footer-border)] bg-white py-12 text-[var(--footer-text)];
+}
+
+.footer-main {
+  @apply grid gap-10 lg:grid-cols-[minmax(240px,280px)_1fr] lg:gap-16 xl:gap-20;
+}
+
+.footer-brand {
+  @apply flex flex-col;
+}
+
+.footer-logo {
+  @apply mb-6 max-w-44;
+}
+
+.footer-logo img {
+  @apply h-auto w-full max-w-full;
+}
+
+.footer-description {
+  @apply text-sm leading-relaxed text-[var(--footer-text-muted)] [&_a]:text-[var(--footer-accent)] [&_a]:no-underline [&_a]:hover:underline [&_p]:m-0;
+}
+
+.footer-brand-extra {
+  @apply mt-8 lg:mt-auto;
+}
+
+.footer-nav {
+  @apply grid gap-8 sm:grid-cols-2 lg:grid-cols-3 lg:gap-10 xl:gap-12;
+}
+
+.footer-nav-title {
+  @apply mb-4 text-sm font-bold text-[var(--footer-text)];
+}
+
+.footer-divider {
+  @apply my-8 border-[var(--footer-border)];
+}
+
+.footer-bottom {
+  @apply flex flex-col items-center justify-between gap-4 md:flex-row;
+}
+
+.footer-copyright {
+  @apply text-sm text-[var(--footer-text-muted)];
+}
+
+.footer-legal {
+  @apply flex flex-wrap justify-center gap-6 md:justify-end;
+}
+
+.footer-legal a {
+  @apply text-sm text-[var(--footer-text-muted)] no-underline transition-colors hover:text-[var(--footer-accent)];
+}
+
+.component.footer .link-list h1,
+.component.footer .link-list h2,
+.component.footer .link-list h3,
+.component.footer .link-list h4,
+.component.footer .link-list h5,
+.component.footer .link-list h6 {
+  @apply hidden;
+}
+
+.component.footer .link-list ul {
+  @apply flex flex-col gap-3;
+}
+
+.component.footer .link-list a {
+  @apply text-sm text-[var(--footer-text-muted)] no-underline transition-colors hover:text-[var(--footer-text)] hover:underline;
+}
+
+.component.footer .icon-link-list .field-link,
+.component.footer .link-list .field-link {
+  @apply flex items-center gap-3;
+}
+
+.component.footer .icon-link-list a {
+  @apply text-sm text-[var(--footer-text-muted)] no-underline transition-colors hover:text-[var(--footer-text)] hover:underline;
+}
+
+.component.footer .icon-link-list .icon,
+.component.footer .icon-link-list svg {
+  @apply size-4 shrink-0 text-[var(--footer-text-muted)];
+}
+
+.component.footer .footer-brand-extra > div {
+  @apply flex flex-wrap gap-3;
+}
+
+.component.footer .footer-brand-extra a {
+  @apply text-[var(--footer-text-muted)] transition-colors hover:text-[var(--footer-accent)];
+}
+
+.component.footer .footer-brand-extra svg {
+  @apply size-5;
+}

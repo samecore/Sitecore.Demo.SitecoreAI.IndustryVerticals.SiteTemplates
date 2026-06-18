@@ -1,0 +1,60 @@
+.selected-destinations {
+  --destinations-accent: #007a48;
+  --destinations-accent-hover: #00663c;
+}
+
+.selected-destinations-header {
+  @apply mb-8 md:mb-10;
+}
+
+.selected-destinations-header-inner {
+  @apply mx-auto max-w-3xl text-center;
+}
+
+.selected-destinations-title {
+  @apply text-foreground text-2xl font-bold md:text-3xl lg:text-4xl;
+}
+
+.selected-destinations-description {
+  @apply text-foreground-muted mt-2 text-sm md:text-base;
+}
+
+.selected-destinations-grid {
+  @apply grid grid-cols-2 gap-5 sm:gap-6 lg:grid-cols-4;
+}
+
+.selected-destinations-card {
+  @apply flex h-full flex-col;
+}
+
+.selected-destinations-card-image {
+  @apply bg-background-muted relative aspect-[4/5] w-full overflow-hidden rounded-xl;
+}
+
+.selected-destinations-card-image img {
+  @apply h-full w-full object-cover;
+}
+
+.selected-destinations-card-body {
+  @apply mt-4 flex flex-1 flex-col;
+}
+
+.selected-destinations-card-title {
+  @apply text-foreground text-base font-bold md:text-lg;
+}
+
+.selected-destinations-card-price {
+  @apply text-base font-bold text-[var(--destinations-accent)] md:text-lg;
+}
+
+.selected-destinations-card-meta {
+  @apply text-foreground-muted mt-1 text-xs md:text-sm;
+}
+
+.selected-destinations-card-link {
+  @apply mt-2 inline-flex items-center gap-1 text-sm font-semibold text-[var(--destinations-accent)] transition-colors hover:text-[var(--destinations-accent-hover)];
+}
+
+.selected-destinations-card-badge {
+  @apply text-background absolute top-3 right-3 rounded-full bg-[var(--destinations-accent)] px-3 py-1 text-xs font-semibold shadow-sm;
+}

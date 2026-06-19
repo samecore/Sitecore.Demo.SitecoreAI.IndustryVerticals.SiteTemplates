@@ -19,6 +19,8 @@ import {
   DropdownMenuTrigger,
 } from '@/shadcn/components/ui/dropdown-menu';
 import { DatePicker } from '@/shadcn/components/ui/date-picker';
+import { event } from '@sitecore-cloudsdk/events/browser';
+import { format } from 'date-fns';
 
 interface Fields {
   PlaceholderText?: Field<string>;
@@ -239,6 +241,20 @@ export const Medium = ({ params, fields }: ItemFinderProps): JSX.Element => {
   );
 };
 
+// Curated Saudia Airlines destinations
+const saudiaDestinations = [
+  { code: 'RUH', city: 'Riyadh' },
+  { code: 'JED', city: 'Jeddah' },
+  { code: 'DXB', city: 'Dubai' },
+  { code: 'CAI', city: 'Cairo' },
+  { code: 'LHR', city: 'London' },
+  { code: 'CDG', city: 'Paris' },
+  { code: 'IST', city: 'Istanbul' },
+  { code: 'KHI', city: 'Karachi' },
+  { code: 'BOM', city: 'Mumbai' },
+  { code: 'KUL', city: 'Kuala Lumpur' },
+];
+
 // Large variant - Complex form with date pickers
 export const Large = ({ params, fields }: ItemFinderProps): JSX.Element => {
   const { page } = useSitecore();
@@ -274,13 +290,29 @@ export const Large = ({ params, fields }: ItemFinderProps): JSX.Element => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle flight search logic here
+    event({
+      type: 'FLIGHT_SEARCH',
+      channel: 'WEB',
+      language: 'EN',
+      currency: 'USD',
+      extensionData: {
+        tripType,
+        origin: from,
+        destination: to,
+        ...(departureDate ? { departureDate: format(departureDate, 'yyyy-MM-dd') } : {}),
+        ...(returnDate ? { returnDate: format(returnDate, 'yyyy-MM-dd') } : {}),
+        passengers,
+      },
+    }).catch((e) => console.debug(e));
   };
 
   const handleSwapLocations = () => {
     setFrom(to);
     setTo(from);
   };
+
+  const fromCity = saudiaDestinations.find((d) => d.code === from)?.city;
+  const toCity = saudiaDestinations.find((d) => d.code === to)?.city;
 
   const selectedPassengerLabel =
     passengerOptions.find((opt) => opt.value === passengers)?.label || t('1adult') || '1 Adult';
@@ -317,16 +349,37 @@ export const Large = ({ params, fields }: ItemFinderProps): JSX.Element => {
             </div>
 
             <div className="flight-booking-locations">
-              <div className="flight-booking-field flight-booking-field-location">
-                <input
-                  type="text"
-                  value={from}
-                  onChange={(e) => setFrom(e.target.value)}
-                  placeholder={t('from_label') || 'From'}
-                  aria-label={t('from_label') || 'From'}
-                />
-                <PlaneTakeoff className="flight-booking-field-icon" size={20} aria-hidden="true" />
-              </div>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button
+                    type="button"
+                    className="flight-booking-field-trigger"
+                    aria-label={t('from_label') || 'From'}
+                  >
+                    <div className="flight-booking-field-trigger-content">
+                      <span className="flight-booking-field-label">
+                        {t('from_label') || 'From'}
+                      </span>
+                      <span className={from ? 'flight-booking-field-value' : 'flight-booking-field-value-muted'}>
+                        {from ? `${from} — ${fromCity}` : t('select_airport_placeholder') || 'Select airport'}
+                      </span>
+                    </div>
+                    <PlaneTakeoff className="flight-booking-field-trigger-icon" size={20} aria-hidden="true" />
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="start" className="min-w-48">
+                  {saudiaDestinations.map((dest) => (
+                    <DropdownMenuItem
+                      key={dest.code}
+                      onClick={() => setFrom(dest.code)}
+                      className="flex items-center justify-between"
+                    >
+                      <span>{dest.code} — {dest.city}</span>
+                      {from === dest.code && <Check size={16} className="ml-2 shrink-0 text-[var(--flight-primary)]" />}
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
 
               <button
                 type="button"
@@ -337,16 +390,37 @@ export const Large = ({ params, fields }: ItemFinderProps): JSX.Element => {
                 <ArrowLeftRight size={18} />
               </button>
 
-              <div className="flight-booking-field flight-booking-field-location">
-                <input
-                  type="text"
-                  value={to}
-                  onChange={(e) => setTo(e.target.value)}
-                  placeholder={t('to_label') || 'To'}
-                  aria-label={t('to_label') || 'To'}
-                />
-                <PlaneLanding className="flight-booking-field-icon" size={20} aria-hidden="true" />
-              </div>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button
+                    type="button"
+                    className="flight-booking-field-trigger"
+                    aria-label={t('to_label') || 'To'}
+                  >
+                    <div className="flight-booking-field-trigger-content">
+                      <span className="flight-booking-field-label">
+                        {t('to_label') || 'To'}
+                      </span>
+                      <span className={to ? 'flight-booking-field-value' : 'flight-booking-field-value-muted'}>
+                        {to ? `${to} — ${toCity}` : t('select_airport_placeholder') || 'Select airport'}
+                      </span>
+                    </div>
+                    <PlaneLanding className="flight-booking-field-trigger-icon" size={20} aria-hidden="true" />
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="start" className="min-w-48">
+                  {saudiaDestinations.map((dest) => (
+                    <DropdownMenuItem
+                      key={dest.code}
+                      onClick={() => setTo(dest.code)}
+                      className="flex items-center justify-between"
+                    >
+                      <span>{dest.code} — {dest.city}</span>
+                      {to === dest.code && <Check size={16} className="ml-2 shrink-0 text-[var(--flight-primary)]" />}
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
 
             <div

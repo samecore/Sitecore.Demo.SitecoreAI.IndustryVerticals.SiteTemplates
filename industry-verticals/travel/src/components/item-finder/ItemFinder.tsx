@@ -360,11 +360,21 @@ export const Large = ({ params, fields }: ItemFinderProps): JSX.Element => {
                       <span className="flight-booking-field-label">
                         {t('from_label') || 'From'}
                       </span>
-                      <span className={from ? 'flight-booking-field-value' : 'flight-booking-field-value-muted'}>
-                        {from ? `${from} — ${fromCity}` : t('select_airport_placeholder') || 'Select airport'}
+                      <span
+                        className={
+                          from ? 'flight-booking-field-value' : 'flight-booking-field-value-muted'
+                        }
+                      >
+                        {from
+                          ? `${from} — ${fromCity}`
+                          : t('select_airport_placeholder') || 'Select airport'}
                       </span>
                     </div>
-                    <PlaneTakeoff className="flight-booking-field-trigger-icon" size={20} aria-hidden="true" />
+                    <PlaneTakeoff
+                      className="flight-booking-field-trigger-icon"
+                      size={20}
+                      aria-hidden="true"
+                    />
                   </button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="start" className="min-w-48">
@@ -374,8 +384,12 @@ export const Large = ({ params, fields }: ItemFinderProps): JSX.Element => {
                       onClick={() => setFrom(dest.code)}
                       className="flex items-center justify-between"
                     >
-                      <span>{dest.code} — {dest.city}</span>
-                      {from === dest.code && <Check size={16} className="ml-2 shrink-0 text-[var(--flight-primary)]" />}
+                      <span>
+                        {dest.code} — {dest.city}
+                      </span>
+                      {from === dest.code && (
+                        <Check size={16} className="ml-2 shrink-0 text-[var(--flight-primary)]" />
+                      )}
                     </DropdownMenuItem>
                   ))}
                 </DropdownMenuContent>
@@ -398,14 +412,22 @@ export const Large = ({ params, fields }: ItemFinderProps): JSX.Element => {
                     aria-label={t('to_label') || 'To'}
                   >
                     <div className="flight-booking-field-trigger-content">
-                      <span className="flight-booking-field-label">
-                        {t('to_label') || 'To'}
-                      </span>
-                      <span className={to ? 'flight-booking-field-value' : 'flight-booking-field-value-muted'}>
-                        {to ? `${to} — ${toCity}` : t('select_airport_placeholder') || 'Select airport'}
+                      <span className="flight-booking-field-label">{t('to_label') || 'To'}</span>
+                      <span
+                        className={
+                          to ? 'flight-booking-field-value' : 'flight-booking-field-value-muted'
+                        }
+                      >
+                        {to
+                          ? `${to} — ${toCity}`
+                          : t('select_airport_placeholder') || 'Select airport'}
                       </span>
                     </div>
-                    <PlaneLanding className="flight-booking-field-trigger-icon" size={20} aria-hidden="true" />
+                    <PlaneLanding
+                      className="flight-booking-field-trigger-icon"
+                      size={20}
+                      aria-hidden="true"
+                    />
                   </button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="start" className="min-w-48">
@@ -415,8 +437,12 @@ export const Large = ({ params, fields }: ItemFinderProps): JSX.Element => {
                       onClick={() => setTo(dest.code)}
                       className="flex items-center justify-between"
                     >
-                      <span>{dest.code} — {dest.city}</span>
-                      {to === dest.code && <Check size={16} className="ml-2 shrink-0 text-[var(--flight-primary)]" />}
+                      <span>
+                        {dest.code} — {dest.city}
+                      </span>
+                      {to === dest.code && (
+                        <Check size={16} className="ml-2 shrink-0 text-[var(--flight-primary)]" />
+                      )}
                     </DropdownMenuItem>
                   ))}
                 </DropdownMenuContent>

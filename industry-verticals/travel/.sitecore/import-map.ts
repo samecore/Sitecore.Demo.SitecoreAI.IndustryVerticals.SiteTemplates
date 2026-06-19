@@ -8,14 +8,14 @@ import {
 // end of built-in imports
 
 import { Link, Text, useSitecore, RichText, NextImage, Image, DateField, Placeholder, CdpHelper, withDatasourceCheck } from '@sitecore-content-sdk/nextjs';
-import { useMemo, useState, useCallback, useRef, useEffect } from 'react';
+import { useMemo, useState, useEffect, useCallback, useRef } from 'react';
 import React from 'react';
 import Head from 'next/head';
 import { useI18n } from 'next-localization';
 import { faFacebookF, faInstagram, faLinkedinIn, faTwitter, faYoutube, faPinterestP } from '@fortawesome/free-brands-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Link_a258c208ba01265ca0aa9c7abae745cc7141aa63 from 'next/link';
-import { ArrowRight, Share2, ArrowLeft, ChevronLeft, ChevronRight, Phone, Plane, Bed, Camera, Navigation, CalendarDays, Clock, MapPin, Star, Thermometer, LoaderCircle, Check, ChevronDown, X, Search, Users, Menu, Heart, Calendar, User } from 'lucide-react';
+import { ChevronRight, ArrowRight, Bell, Share2, ArrowLeft, ChevronLeft, Copy, Check, UserCircle, RotateCcw, X, Loader2, Phone, Plane, Bed, Camera, Navigation, CalendarDays, Clock, MapPin, Star, Thermometer, LoaderCircle, ChevronDown, Search, PlaneTakeoff, PlaneLanding, ArrowLeftRight, Menu, Heart, Calendar, User } from 'lucide-react';
 import * as LucidIcons from 'lucide-react';
 import { LayoutStyles, PromoFlags, HeroBannerStyles, TitleSectionFlags } from '@/types/styleFlags';
 import { newsDateFormatter } from '@/helpers/dateHelper';
@@ -23,10 +23,12 @@ import { useSearchParams, usePathname, useRouter } from 'next/navigation';
 import QuestionsAnswers from 'src/components/non-sitecore/search/QuestionsAnswers';
 import SearchResultsWidget from 'src/components/non-sitecore/search/SearchResultsComponent';
 import { SEARCH_WIDGET_ID, HIGHLIGHTED_ARTICLES_RFKID, DEFAULT_IMG_URL, PREVIEW_WIDGET_ID, HOMEHIGHLIGHTED_WIDGET_ID, DESTINATIONS_WIDGET_ID } from '@/constants/search';
+import { identity, event, pageView } from '@sitecore-cloudsdk/events/browser';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/shadcn/components/ui/dropdown-menu';
 import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
 import { EmailIcon, EmailShareButton, FacebookIcon, FacebookShareButton, LinkedinIcon, LinkedinShareButton, PinterestIcon, PinterestShareButton, TwitterIcon, TwitterShareButton } from 'react-share';
 import { usePagination } from '@/hooks/usePagination';
+import { TripAlertForm } from 'src/components/non-sitecore/TripAlertForm';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/shadcn/components/ui/tabs';
 import Image_5d8ce56058442d94361877e28c501c951a554a6a from 'next/image';
 import { usePreviewSearchActions, useSearchResultsActions, WidgetDataType, useSearchResults, widget, useQuestions, usePreviewSearch, FilterEqual, useSearchResultsSelectedFacets } from '@sitecore-search/react';
@@ -53,6 +55,7 @@ import clsx from 'clsx';
 import { isParamEnabled } from '@/helpers/isParamEnabled';
 import { Drawer, DrawerTrigger, DrawerContent, DrawerClose } from '@/shadcn/components/ui/drawer';
 import { DatePicker } from '@/shadcn/components/ui/date-picker';
+import { format } from 'date-fns';
 import PreviewSearch_938f3b0320996fc3fe6ab3d953daf2e708e085ca from 'src/components/non-sitecore/search/PreviewSearch';
 import DestinationCard from 'src/components/non-sitecore/DestinationCard';
 import FilterDropdown from 'src/components/non-sitecore/search/FilterDropdown';
@@ -64,7 +67,6 @@ import { DestinationLinkedContent } from 'src/components/non-sitecore/Destinatio
 import client from 'lib/sitecore-client';
 import * as FEAAS from '@sitecore-feaas/clientside/react';
 import nextConfig from 'next.config';
-import { pageView } from '@sitecore-cloudsdk/events/browser';
 import config from 'sitecore.config';
 import { newsDateFormatter as newsDateFormatter_77fef27f114da656b11a70d96f9a0ef7725fc8c6 } from 'src/helpers/dateHelper';
 import { Author } from 'src/components/non-sitecore/Author';
@@ -90,9 +92,9 @@ const importMap = [
     exports: [
       { name: 'useMemo', value: useMemo },
       { name: 'useState', value: useState },
+      { name: 'useEffect', value: useEffect },
       { name: 'useCallback', value: useCallback },
       { name: 'useRef', value: useRef },
-      { name: 'useEffect', value: useEffect },
       { name: 'default', value: React },
     ]
   },
@@ -134,11 +136,18 @@ const importMap = [
   {
     module: 'lucide-react',
     exports: [
+      { name: 'ChevronRight', value: ChevronRight },
       { name: 'ArrowRight', value: ArrowRight },
+      { name: 'Bell', value: Bell },
       { name: 'Share2', value: Share2 },
       { name: 'ArrowLeft', value: ArrowLeft },
       { name: 'ChevronLeft', value: ChevronLeft },
-      { name: 'ChevronRight', value: ChevronRight },
+      { name: 'Copy', value: Copy },
+      { name: 'Check', value: Check },
+      { name: 'UserCircle', value: UserCircle },
+      { name: 'RotateCcw', value: RotateCcw },
+      { name: 'X', value: X },
+      { name: 'Loader2', value: Loader2 },
       { name: 'Phone', value: Phone },
       { name: 'Plane', value: Plane },
       { name: 'Bed', value: Bed },
@@ -150,11 +159,11 @@ const importMap = [
       { name: 'Star', value: Star },
       { name: 'Thermometer', value: Thermometer },
       { name: 'LoaderCircle', value: LoaderCircle },
-      { name: 'Check', value: Check },
       { name: 'ChevronDown', value: ChevronDown },
-      { name: 'X', value: X },
       { name: 'Search', value: Search },
-      { name: 'Users', value: Users },
+      { name: 'PlaneTakeoff', value: PlaneTakeoff },
+      { name: 'PlaneLanding', value: PlaneLanding },
+      { name: 'ArrowLeftRight', value: ArrowLeftRight },
       { name: 'Menu', value: Menu },
       { name: 'Heart', value: Heart },
       { name: 'Calendar', value: Calendar },
@@ -209,6 +218,14 @@ const importMap = [
     ]
   },
   {
+    module: '@sitecore-cloudsdk/events/browser',
+    exports: [
+      { name: 'identity', value: identity },
+      { name: 'event', value: event },
+      { name: 'pageView', value: pageView },
+    ]
+  },
+  {
     module: '@/shadcn/components/ui/dropdown-menu',
     exports: [
       { name: 'DropdownMenu', value: DropdownMenu },
@@ -242,6 +259,12 @@ const importMap = [
     module: '@/hooks/usePagination',
     exports: [
       { name: 'usePagination', value: usePagination },
+    ]
+  },
+  {
+    module: 'src/components/non-sitecore/TripAlertForm',
+    exports: [
+      { name: 'TripAlertForm', value: TripAlertForm },
     ]
   },
   {
@@ -436,6 +459,12 @@ const importMap = [
     ]
   },
   {
+    module: 'date-fns',
+    exports: [
+      { name: 'format', value: format },
+    ]
+  },
+  {
     module: 'src/components/non-sitecore/search/PreviewSearch',
     exports: [
       { name: 'default', value: PreviewSearch_938f3b0320996fc3fe6ab3d953daf2e708e085ca },
@@ -499,12 +528,6 @@ const importMap = [
     module: 'next.config',
     exports: [
       { name: 'default', value: nextConfig },
-    ]
-  },
-  {
-    module: '@sitecore-cloudsdk/events/browser',
-    exports: [
-      { name: 'pageView', value: pageView },
     ]
   },
   {

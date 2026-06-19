@@ -1,6 +1,7 @@
 import { Text } from '@sitecore-content-sdk/nextjs';
 import { DestinationFields } from '@/types/destination';
 import { Phone, Plane } from 'lucide-react';
+import { TripAlertForm } from './TripAlertForm';
 import { useI18n } from 'next-localization';
 
 export const DestinationSidebar = ({ destination }: { destination: DestinationFields }) => {
@@ -57,6 +58,8 @@ export const DestinationSidebar = ({ destination }: { destination: DestinationFi
           </span>
         </div>
       </div>
+
+      <TripAlertForm destinationName={destination.Title?.value || 'this destination'} />
 
       <div className="info-card">
         <h5 className="info-card-title">

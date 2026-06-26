@@ -6,6 +6,16 @@
     @apply max-w-full;
   }
 }
+
+.component.rich-text > .component-content {
+  @apply w-full px-2 py-8 lg:py-12;
+}
+
+.component.rich-text .rich-text.ck-content {
+  @apply mx-auto w-full text-foreground-light leading-relaxed;
+  max-width: min(100%, calc(0.4 * (100vw - 1rem) + 38.4rem));
+}
+
 .content,
 .rich-text,
 .ck-content {

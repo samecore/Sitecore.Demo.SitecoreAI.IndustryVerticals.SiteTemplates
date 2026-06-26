@@ -2,6 +2,9 @@
   --destination-accent: #007a48;
   --destination-accent-hover: #00663c;
   --destination-accent-light: #e8f5ee;
+  --destination-top-spacing: calc(2.64rem + clamp(4.32rem, 5.28vw, 6.72rem));
+
+  padding-top: var(--destination-top-spacing);
 }
 
 .component.destination-details .text-accent {

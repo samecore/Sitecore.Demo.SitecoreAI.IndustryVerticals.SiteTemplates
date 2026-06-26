@@ -9,7 +9,7 @@ export const DestinationSidebar = ({ destination }: { destination: DestinationFi
 
   return (
     <div className="relative space-y-8">
-      <div className="info-card bg-background-muted! lg:sticky lg:top-6">
+      <div className="info-card bg-background-muted!">
         <h5 className="info-card-title">
           <Plane />
           {t('book_your_flight_label') || 'Book Your Flight'}

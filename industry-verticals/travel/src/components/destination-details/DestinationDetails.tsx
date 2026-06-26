@@ -7,7 +7,6 @@ import { DestinationFields } from '@/types/destination';
 import { Heart, Star } from 'lucide-react';
 import { DestinationHighlights } from '../non-sitecore/DestinationHighlights';
 import { DestinationSidebar } from '../non-sitecore/DestinationSidebar';
-import { ParentPathLink } from '../non-sitecore/ParentPathLink';
 import { DestinationLinkedContent } from '../non-sitecore/DestinationLinkedContent';
 import { useI18n } from 'next-localization';
 
@@ -60,41 +59,42 @@ export const Default = ({ params, fields }: DestinationDetailsProps) => {
         data-activities={fields.Activities?.map((a) => a.fields.Title?.value).join(', ') || ''}
       >
         <div className="container">
-          <ParentPathLink text={t('back_to_destinations') || 'Back to Destinations'} />
-        </div>
+          <div className="relative flex min-h-96 flex-col justify-between gap-8 overflow-hidden rounded-lg p-8 lg:min-h-130">
+            <div className="relative z-1 flex justify-end gap-2">
+              <button className="simple-btn">
+                <Heart /> {t('save_label') || 'Save'}
+              </button>
+              <SocialShare
+                url={currentUrl}
+                title={fields?.Title?.value || ''}
+                description={fields?.ShortDescription?.value || ''}
+                mediaUrl={fields?.Image?.value?.src || ''}
+              />
+            </div>
 
-        <div className="relative flex min-h-96 flex-col justify-between gap-8 px-4 py-8 sm:px-8 lg:min-h-130">
-          <div className="relative z-1 flex justify-end gap-2">
-            <button className="simple-btn">
-              <Heart /> {t('save_label') || 'Save'}
-            </button>
-            <SocialShare
-              url={currentUrl}
-              title={fields?.Title?.value || ''}
-              description={fields?.ShortDescription?.value || ''}
-              mediaUrl={fields?.Image?.value?.src || ''}
+            <div className="relative z-2">
+              <div className="flex items-center gap-1">
+                <Star className="inline size-4 fill-yellow-400 text-yellow-400" />
+                <span className="text-background font-bold">
+                  <Text field={fields.Rating} />
+                </span>
+                <span className="text-background-muted/80 ml-2">
+                  <Text field={fields.NumberOfReviews} /> {t('reviews_label') || 'reviews'}
+                </span>
+              </div>
+              <h1 className="text-background">
+                <Text field={fields.Title} />
+              </h1>
+              <p className="text-background-muted/90 text-xl">
+                <Text field={fields.Country} />
+              </p>
+            </div>
+
+            <Image
+              field={fields.Image}
+              className="absolute inset-0 z-0 h-full w-full object-cover"
             />
           </div>
-
-          <div className="relative z-2">
-            <div className="flex items-center gap-1">
-              <Star className="inline size-4 fill-yellow-400 text-yellow-400" />
-              <span className="text-background font-bold">
-                <Text field={fields.Rating} />
-              </span>
-              <span className="text-background-muted/80 ml-2">
-                <Text field={fields.NumberOfReviews} /> {t('reviews_label') || 'reviews'}
-              </span>
-            </div>
-            <h1 className="text-background">
-              <Text field={fields.Title} />
-            </h1>
-            <p className="text-background-muted/90 text-xl">
-              <Text field={fields.Country} />
-            </p>
-          </div>
-
-          <Image field={fields.Image} className="absolute inset-0 z-0 h-full w-full object-cover" />
         </div>
 
         <div className="container py-8 lg:py-12">

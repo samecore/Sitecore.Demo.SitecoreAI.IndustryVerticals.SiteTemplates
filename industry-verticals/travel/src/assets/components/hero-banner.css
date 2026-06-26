@@ -1,8 +1,12 @@
 .hero-banner--submerged-search {
+  --hero-search-submerged-offset: 2.64rem;
+  --hero-search-content-gap: clamp(4.32rem, 5.28vw, 6.72rem);
+
   @apply relative overflow-visible;
   min-height: clamp(24rem, 52vh, 38rem);
   padding-bottom: clamp(2rem, 4vw, 3rem);
-  margin-bottom: clamp(7rem, 12vw, 10rem);
+  /* Submerged card overflow + ~5–8 lines of text below the search widget */
+  margin-bottom: calc(var(--hero-search-submerged-offset) + var(--hero-search-content-gap));
 }
 
 .hero-banner--submerged-search .hero-banner__overlay-bottom {
@@ -19,7 +23,7 @@
 }
 
 .hero-banner__search {
-  @apply absolute right-0 bottom-0 left-0 z-20 translate-y-1/2;
+  @apply absolute right-0 bottom-0 left-0 z-20 translate-y-[25%];
 }
 
 .hero-banner__search-inner {

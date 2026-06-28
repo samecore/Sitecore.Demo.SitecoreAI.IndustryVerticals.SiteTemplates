@@ -31,6 +31,75 @@ interface ItemFinderProps extends ComponentProps {
   fields?: Fields;
 }
 
+type FlightClass = 'economy' | 'premium' | 'business' | 'first-class';
+
+function BookingSelectField<T extends string | number>({
+  label,
+  valueLabel,
+  isOpen,
+  onToggle,
+  onClose,
+  options,
+  selectedValue,
+  onSelect,
+}: {
+  label: string;
+  valueLabel: string;
+  isOpen: boolean;
+  onToggle: () => void;
+  onClose: () => void;
+  options: { label: string; value: T }[];
+  selectedValue: T;
+  onSelect: (value: T) => void;
+}): JSX.Element {
+  return (
+    <div className="relative">
+      <button
+        type="button"
+        onClick={onToggle}
+        className="flight-booking-field-trigger"
+        aria-expanded={isOpen}
+        aria-haspopup="listbox"
+      >
+        <div className="flight-booking-field-trigger-content">
+          <span className="flight-booking-field-label">{label}</span>
+          <span className="flight-booking-field-value">{valueLabel}</span>
+        </div>
+        <ChevronDown className="flight-booking-field-trigger-icon" size={18} aria-hidden="true" />
+      </button>
+
+      {isOpen && (
+        <>
+          <div className="fixed inset-0 z-10" onClick={onClose} aria-hidden="true" />
+          <div
+            role="listbox"
+            className="absolute top-full right-0 z-20 mt-1 min-w-full rounded-md border border-[#e8e8e8] bg-white py-1 shadow-lg"
+          >
+            {options.map((option) => (
+              <button
+                key={String(option.value)}
+                type="button"
+                role="option"
+                aria-selected={selectedValue === option.value}
+                onClick={() => {
+                  onSelect(option.value);
+                  onClose();
+                }}
+                className="flex w-full items-center justify-between px-4 py-2.5 text-left text-sm text-[var(--flight-text)] transition-colors hover:bg-[#f2f2f2]"
+              >
+                <span>{option.label}</span>
+                {selectedValue === option.value && (
+                  <Check size={16} className="ml-2 shrink-0 text-[var(--flight-primary)]" />
+                )}
+              </button>
+            ))}
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
 // Simple variant - Simple search bar
 export const Default = ({ params, fields }: ItemFinderProps): JSX.Element => {
   const { page } = useSitecore();
@@ -267,9 +336,7 @@ export const Large = ({ params, fields }: ItemFinderProps): JSX.Element => {
   const [returnDate, setReturnDate] = useState<Date | null>(null);
   const [passengers, setPassengers] = useState(1);
   const [children, setChildren] = useState(0);
-  const [flightClass, setFlightClass] = useState<
-    'economy' | 'premium' | 'business' | 'first-class'
-  >('economy');
+  const [flightClass, setFlightClass] = useState<FlightClass>('economy');
   const [showPassengerDropdown, setShowPassengerDropdown] = useState(false);
   const [showChildrenDropdown, setShowChildrenDropdown] = useState(false);
   const [showClassDropdown, setShowClassDropdown] = useState(false);
@@ -302,11 +369,11 @@ export const Large = ({ params, fields }: ItemFinderProps): JSX.Element => {
   );
 
   const flightClassOptions = useMemo(
-    () => [
-      { label: t('economy_class') || 'Economy', value: 'economy' as const },
-      { label: t('premium_class') || 'Premium', value: 'premium' as const },
-      { label: t('business_class') || 'Business', value: 'business' as const },
-      { label: t('first_class') || 'First Class', value: 'first-class' as const },
+    (): { label: string; value: FlightClass }[] => [
+      { label: t('economy_class') || 'Economy', value: 'economy' },
+      { label: t('premium_class') || 'Premium', value: 'premium' },
+      { label: t('business_class') || 'Business', value: 'business' },
+      { label: t('first_class') || 'First Class', value: 'first-class' },
     ],
     [t]
   );
@@ -355,69 +422,6 @@ export const Large = ({ params, fields }: ItemFinderProps): JSX.Element => {
     flightClassOptions.find((opt) => opt.value === flightClass)?.label ||
     t('economy_class') ||
     'Economy';
-
-  const BookingSelectField = <T extends string | number>({
-    label,
-    valueLabel,
-    isOpen,
-    onToggle,
-    options,
-    selectedValue,
-    onSelect,
-  }: {
-    label: string;
-    valueLabel: string;
-    isOpen: boolean;
-    onToggle: () => void;
-    options: { label: string; value: T }[];
-    selectedValue: T;
-    onSelect: (value: T) => void;
-  }) => (
-    <div className="relative">
-      <button
-        type="button"
-        onClick={onToggle}
-        className="flight-booking-field-trigger"
-        aria-expanded={isOpen}
-        aria-haspopup="listbox"
-      >
-        <div className="flight-booking-field-trigger-content">
-          <span className="flight-booking-field-label">{label}</span>
-          <span className="flight-booking-field-value">{valueLabel}</span>
-        </div>
-        <ChevronDown className="flight-booking-field-trigger-icon" size={18} aria-hidden="true" />
-      </button>
-
-      {isOpen && (
-        <>
-          <div className="fixed inset-0 z-10" onClick={closeAllDropdowns} aria-hidden="true" />
-          <div
-            role="listbox"
-            className="absolute top-full right-0 z-20 mt-1 min-w-full rounded-md border border-[#e8e8e8] bg-white py-1 shadow-lg"
-          >
-            {options.map((option) => (
-              <button
-                key={String(option.value)}
-                type="button"
-                role="option"
-                aria-selected={selectedValue === option.value}
-                onClick={() => {
-                  onSelect(option.value);
-                  closeAllDropdowns();
-                }}
-                className="flex w-full items-center justify-between px-4 py-2.5 text-left text-sm text-[var(--flight-text)] transition-colors hover:bg-[#f2f2f2]"
-              >
-                <span>{option.label}</span>
-                {selectedValue === option.value && (
-                  <Check size={16} className="ml-2 shrink-0 text-[var(--flight-primary)]" />
-                )}
-              </button>
-            ))}
-          </div>
-        </>
-      )}
-    </div>
-  );
 
   if (!fields && !isPageEditing) {
     return <></>;
@@ -585,7 +589,7 @@ export const Large = ({ params, fields }: ItemFinderProps): JSX.Element => {
               <div
                 className={`flight-booking-grid__class ${tripType !== 'round-trip' ? 'flight-booking-grid__class--one-way' : ''}`}
               >
-                <BookingSelectField
+                <BookingSelectField<FlightClass>
                   label={t('flight_class_label') || 'Class'}
                   valueLabel={selectedFlightClassLabel}
                   isOpen={showClassDropdown}
@@ -594,6 +598,7 @@ export const Large = ({ params, fields }: ItemFinderProps): JSX.Element => {
                     closeAllDropdowns();
                     if (willOpen) setShowClassDropdown(true);
                   }}
+                  onClose={closeAllDropdowns}
                   options={flightClassOptions}
                   selectedValue={flightClass}
                   onSelect={setFlightClass}
@@ -601,7 +606,7 @@ export const Large = ({ params, fields }: ItemFinderProps): JSX.Element => {
               </div>
 
               <div className="flight-booking-grid__passengers">
-                <BookingSelectField
+                <BookingSelectField<number>
                   label={t('passengers_label') || 'Passengers'}
                   valueLabel={selectedPassengerLabel}
                   isOpen={showPassengerDropdown}
@@ -610,6 +615,7 @@ export const Large = ({ params, fields }: ItemFinderProps): JSX.Element => {
                     closeAllDropdowns();
                     if (willOpen) setShowPassengerDropdown(true);
                   }}
+                  onClose={closeAllDropdowns}
                   options={passengerOptions}
                   selectedValue={passengers}
                   onSelect={setPassengers}
@@ -617,7 +623,7 @@ export const Large = ({ params, fields }: ItemFinderProps): JSX.Element => {
               </div>
 
               <div className="flight-booking-grid__children">
-                <BookingSelectField
+                <BookingSelectField<number>
                   label={t('children_label') || 'Children'}
                   valueLabel={selectedChildrenLabel}
                   isOpen={showChildrenDropdown}
@@ -626,6 +632,7 @@ export const Large = ({ params, fields }: ItemFinderProps): JSX.Element => {
                     closeAllDropdowns();
                     if (willOpen) setShowChildrenDropdown(true);
                   }}
+                  onClose={closeAllDropdowns}
                   options={childrenOptions}
                   selectedValue={children}
                   onSelect={setChildren}

@@ -241,18 +241,17 @@ export const Medium = ({ params, fields }: ItemFinderProps): JSX.Element => {
   );
 };
 
-// Curated Saudia Airlines destinations
-const saudiaDestinations = [
-  { code: 'RUH', city: 'Riyadh' },
-  { code: 'JED', city: 'Jeddah' },
-  { code: 'DXB', city: 'Dubai' },
-  { code: 'CAI', city: 'Cairo' },
-  { code: 'LHR', city: 'London' },
-  { code: 'CDG', city: 'Paris' },
-  { code: 'IST', city: 'Istanbul' },
-  { code: 'KHI', city: 'Karachi' },
-  { code: 'BOM', city: 'Mumbai' },
-  { code: 'KUL', city: 'Kuala Lumpur' },
+const flightDestinations = [
+  'Riyadh',
+  'Jeddah',
+  'Dubai',
+  'London',
+  'Paris',
+  'Istanbul',
+  'Barcelona',
+  'Singapore',
+  'Phuket',
+  'Bali',
 ];
 
 // Large variant - Complex form with date pickers
@@ -268,8 +267,18 @@ export const Large = ({ params, fields }: ItemFinderProps): JSX.Element => {
   const [returnDate, setReturnDate] = useState<Date | null>(null);
   const [passengers, setPassengers] = useState(1);
   const [children, setChildren] = useState(0);
+  const [flightClass, setFlightClass] = useState<
+    'economy' | 'premium' | 'business' | 'first-class'
+  >('economy');
   const [showPassengerDropdown, setShowPassengerDropdown] = useState(false);
   const [showChildrenDropdown, setShowChildrenDropdown] = useState(false);
+  const [showClassDropdown, setShowClassDropdown] = useState(false);
+
+  const closeAllDropdowns = () => {
+    setShowPassengerDropdown(false);
+    setShowChildrenDropdown(false);
+    setShowClassDropdown(false);
+  };
 
   const passengerOptions = useMemo(
     () => [
@@ -288,6 +297,16 @@ export const Large = ({ params, fields }: ItemFinderProps): JSX.Element => {
       { label: t('2_children') || '2 Children', value: 2 },
       { label: t('3_children') || '3 Children', value: 3 },
       { label: t('4-plus-children') || '4+ Children', value: 4 },
+    ],
+    [t]
+  );
+
+  const flightClassOptions = useMemo(
+    () => [
+      { label: t('economy_class') || 'Economy', value: 'economy' as const },
+      { label: t('premium_class') || 'Premium', value: 'premium' as const },
+      { label: t('business_class') || 'Business', value: 'business' as const },
+      { label: t('first_class') || 'First Class', value: 'first-class' as const },
     ],
     [t]
   );
@@ -316,6 +335,7 @@ export const Large = ({ params, fields }: ItemFinderProps): JSX.Element => {
         ...(returnDate ? { returnDate: format(returnDate, 'yyyy-MM-dd') } : {}),
         passengers,
         children,
+        flightClass,
       },
     }).catch((e) => console.debug(e));
   };
@@ -325,21 +345,22 @@ export const Large = ({ params, fields }: ItemFinderProps): JSX.Element => {
     setTo(from);
   };
 
-  const fromCity = saudiaDestinations.find((d) => d.code === from)?.city;
-  const toCity = saudiaDestinations.find((d) => d.code === to)?.city;
-
   const selectedPassengerLabel =
     passengerOptions.find((opt) => opt.value === passengers)?.label || t('1adult') || '1 Adult';
 
   const selectedChildrenLabel =
     childrenOptions.find((opt) => opt.value === children)?.label || t('0_children') || '0 Children';
 
-  const CountSelectField = ({
+  const selectedFlightClassLabel =
+    flightClassOptions.find((opt) => opt.value === flightClass)?.label ||
+    t('economy_class') ||
+    'Economy';
+
+  const BookingSelectField = <T extends string | number>({
     label,
     valueLabel,
     isOpen,
     onToggle,
-    onClose,
     options,
     selectedValue,
     onSelect,
@@ -348,10 +369,9 @@ export const Large = ({ params, fields }: ItemFinderProps): JSX.Element => {
     valueLabel: string;
     isOpen: boolean;
     onToggle: () => void;
-    onClose: () => void;
-    options: { label: string; value: number }[];
-    selectedValue: number;
-    onSelect: (value: number) => void;
+    options: { label: string; value: T }[];
+    selectedValue: T;
+    onSelect: (value: T) => void;
   }) => (
     <div className="relative">
       <button
@@ -370,20 +390,20 @@ export const Large = ({ params, fields }: ItemFinderProps): JSX.Element => {
 
       {isOpen && (
         <>
-          <div className="fixed inset-0 z-10" onClick={onClose} aria-hidden="true" />
+          <div className="fixed inset-0 z-10" onClick={closeAllDropdowns} aria-hidden="true" />
           <div
             role="listbox"
             className="absolute top-full right-0 z-20 mt-1 min-w-full rounded-md border border-[#e8e8e8] bg-white py-1 shadow-lg"
           >
             {options.map((option) => (
               <button
-                key={option.value}
+                key={String(option.value)}
                 type="button"
                 role="option"
                 aria-selected={selectedValue === option.value}
                 onClick={() => {
                   onSelect(option.value);
-                  onClose();
+                  closeAllDropdowns();
                 }}
                 className="flex w-full items-center justify-between px-4 py-2.5 text-left text-sm text-[var(--flight-text)] transition-colors hover:bg-[#f2f2f2]"
               >
@@ -448,9 +468,7 @@ export const Large = ({ params, fields }: ItemFinderProps): JSX.Element => {
                             from ? 'flight-booking-field-value' : 'flight-booking-field-value-muted'
                           }
                         >
-                          {from
-                            ? `${from} — ${fromCity}`
-                            : t('select_airport_placeholder') || 'Select airport'}
+                          {from || t('select_airport_placeholder') || 'Select city'}
                         </span>
                       </div>
                       <PlaneTakeoff
@@ -461,16 +479,14 @@ export const Large = ({ params, fields }: ItemFinderProps): JSX.Element => {
                     </button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="start" className="min-w-48">
-                    {saudiaDestinations.map((dest) => (
+                    {flightDestinations.map((city) => (
                       <DropdownMenuItem
-                        key={dest.code}
-                        onClick={() => setFrom(dest.code)}
+                        key={city}
+                        onClick={() => setFrom(city)}
                         className="flex items-center justify-between"
                       >
-                        <span>
-                          {dest.code} — {dest.city}
-                        </span>
-                        {from === dest.code && (
+                        <span>{city}</span>
+                        {from === city && (
                           <Check size={16} className="ml-2 shrink-0 text-[var(--flight-primary)]" />
                         )}
                       </DropdownMenuItem>
@@ -503,9 +519,7 @@ export const Large = ({ params, fields }: ItemFinderProps): JSX.Element => {
                             to ? 'flight-booking-field-value' : 'flight-booking-field-value-muted'
                           }
                         >
-                          {to
-                            ? `${to} — ${toCity}`
-                            : t('select_airport_placeholder') || 'Select airport'}
+                          {to || t('select_airport_placeholder') || 'Select city'}
                         </span>
                       </div>
                       <PlaneLanding
@@ -516,16 +530,14 @@ export const Large = ({ params, fields }: ItemFinderProps): JSX.Element => {
                     </button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="start" className="min-w-48">
-                    {saudiaDestinations.map((dest) => (
+                    {flightDestinations.map((city) => (
                       <DropdownMenuItem
-                        key={dest.code}
-                        onClick={() => setTo(dest.code)}
+                        key={city}
+                        onClick={() => setTo(city)}
                         className="flex items-center justify-between"
                       >
-                        <span>
-                          {dest.code} — {dest.city}
-                        </span>
-                        {to === dest.code && (
+                        <span>{city}</span>
+                        {to === city && (
                           <Check size={16} className="ml-2 shrink-0 text-[var(--flight-primary)]" />
                         )}
                       </DropdownMenuItem>
@@ -570,16 +582,34 @@ export const Large = ({ params, fields }: ItemFinderProps): JSX.Element => {
                 </div>
               )}
 
+              <div
+                className={`flight-booking-grid__class ${tripType !== 'round-trip' ? 'flight-booking-grid__class--one-way' : ''}`}
+              >
+                <BookingSelectField
+                  label={t('flight_class_label') || 'Class'}
+                  valueLabel={selectedFlightClassLabel}
+                  isOpen={showClassDropdown}
+                  onToggle={() => {
+                    const willOpen = !showClassDropdown;
+                    closeAllDropdowns();
+                    if (willOpen) setShowClassDropdown(true);
+                  }}
+                  options={flightClassOptions}
+                  selectedValue={flightClass}
+                  onSelect={setFlightClass}
+                />
+              </div>
+
               <div className="flight-booking-grid__passengers">
-                <CountSelectField
+                <BookingSelectField
                   label={t('passengers_label') || 'Passengers'}
                   valueLabel={selectedPassengerLabel}
                   isOpen={showPassengerDropdown}
                   onToggle={() => {
-                    setShowChildrenDropdown(false);
-                    setShowPassengerDropdown((open) => !open);
+                    const willOpen = !showPassengerDropdown;
+                    closeAllDropdowns();
+                    if (willOpen) setShowPassengerDropdown(true);
                   }}
-                  onClose={() => setShowPassengerDropdown(false)}
                   options={passengerOptions}
                   selectedValue={passengers}
                   onSelect={setPassengers}
@@ -587,15 +617,15 @@ export const Large = ({ params, fields }: ItemFinderProps): JSX.Element => {
               </div>
 
               <div className="flight-booking-grid__children">
-                <CountSelectField
+                <BookingSelectField
                   label={t('children_label') || 'Children'}
                   valueLabel={selectedChildrenLabel}
                   isOpen={showChildrenDropdown}
                   onToggle={() => {
-                    setShowPassengerDropdown(false);
-                    setShowChildrenDropdown((open) => !open);
+                    const willOpen = !showChildrenDropdown;
+                    closeAllDropdowns();
+                    if (willOpen) setShowChildrenDropdown(true);
                   }}
-                  onClose={() => setShowChildrenDropdown(false)}
                   options={childrenOptions}
                   selectedValue={children}
                   onSelect={setChildren}

@@ -21,6 +21,7 @@ import {
 import { DatePicker } from '@/shadcn/components/ui/date-picker';
 import { event } from '@sitecore-cloudsdk/events/browser';
 import { format } from 'date-fns';
+import { useRouter } from 'next/router';
 
 interface Fields {
   PlaceholderText?: Field<string>;
@@ -323,9 +324,14 @@ const flightDestinations = [
   'Bali',
 ];
 
+function getDestinationPagePath(city: string): string {
+  return `/Destinations/${encodeURIComponent(city)}`;
+}
+
 // Large variant - Complex form with date pickers
 export const Large = ({ params, fields }: ItemFinderProps): JSX.Element => {
   const { page } = useSitecore();
+  const router = useRouter();
   const { styles, RenderingIdentifier: id } = params;
   const { t } = useI18n();
   const isPageEditing = page.mode.isEditing;
@@ -389,6 +395,7 @@ export const Large = ({ params, fields }: ItemFinderProps): JSX.Element => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
     event({
       type: 'FLIGHT_SEARCH',
       channel: 'WEB',
@@ -405,6 +412,10 @@ export const Large = ({ params, fields }: ItemFinderProps): JSX.Element => {
         flightClass,
       },
     }).catch((e) => console.debug(e));
+
+    if (to && !isPageEditing) {
+      void router.push(getDestinationPagePath(to));
+    }
   };
 
   const handleSwapLocations = () => {

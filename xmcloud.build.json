@@ -18,7 +18,7 @@
       "buildCommand": "build",
       "runCommand": "next:start"
     },
-    "leap": {
+    "LEAP": {
       "path": "./industry-verticals/prospera",
       "nodeVersion": "22.11.0",
       "jssDeploymentSecret": "110F1C44A496B45478640DD36F80C18C9",

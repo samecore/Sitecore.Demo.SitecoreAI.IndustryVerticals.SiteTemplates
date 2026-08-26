@@ -56,7 +56,7 @@
     }
   },
   "deployItems": {
-    "modules": ["Project.IndustryVerticals"]
+    "modules": ["Project.IndustryVerticals", "prosperabank"]
   },
   "postActions": {
     "actions": {

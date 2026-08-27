@@ -53,4 +53,51 @@
     margin-left: auto;
     margin-right: auto;
   }
+
+  .application-form-error {
+    color: #b42318;
+    font-size: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .application-form-popup-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    background-color: rgba(3, 24, 39, 0.55);
+  }
+
+  .application-form-popup {
+    width: 100%;
+    max-width: 28rem;
+    padding: 2rem 2.25rem;
+    text-align: center;
+    background-color: var(--bg-main-alt);
+    border-radius: var(--roundness);
+    box-shadow: 0 12px 40px rgba(3, 24, 39, 0.2);
+  }
+
+  .application-form-popup-title {
+    margin: 0 0 0.75rem;
+    color: var(--text-colored);
+    font-size: 1.75rem;
+    font-weight: bold;
+    line-height: 1.25;
+  }
+
+  .application-form-popup-message {
+    margin: 0 0 1.75rem;
+    color: #707070;
+    font-size: 1.25rem;
+    line-height: 1.4;
+  }
+
+  .application-form-popup-close {
+    display: inline-block;
+    width: fit-content;
+  }
 }

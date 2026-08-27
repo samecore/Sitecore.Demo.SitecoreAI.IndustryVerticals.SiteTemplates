@@ -46,6 +46,7 @@ export const CallbackRequestForm = ({ showIntro = false }: { showIntro?: boolean
       identifiers: [{ id: trimmedEmail, provider: 'email' }],
       ...(trimmedFirstName ? { firstName: trimmedFirstName } : {}),
       ...(trimmedLastName ? { lastName: trimmedLastName } : {}),
+      ...(trimmedPhone ? { mobile: trimmedPhone } : {}),
     }).catch((err: unknown) => console.debug(err));
 
     event({

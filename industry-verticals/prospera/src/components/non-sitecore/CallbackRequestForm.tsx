@@ -1,7 +1,7 @@
 'use client';
 
 import { FormEvent, JSX, useState } from 'react';
-import { identity } from '@sitecore-content-sdk/events';
+import { event, identity } from '@sitecore-content-sdk/events';
 
 export const CallbackRequestForm = ({ showIntro = false }: { showIntro?: boolean }): JSX.Element => {
   const [firstName, setFirstName] = useState('');
@@ -11,7 +11,7 @@ export const CallbackRequestForm = ({ showIntro = false }: { showIntro?: boolean
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState('');
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (!firstName.trim()) {
@@ -44,14 +44,22 @@ export const CallbackRequestForm = ({ showIntro = false }: { showIntro?: boolean
       currency: 'USD',
       email: trimmedEmail,
       identifiers: [{ id: trimmedEmail, provider: 'email' }],
-      firstName: trimmedFirstName,
-      lastName: trimmedLastName,
-      phone: trimmedPhone,
+      ...(trimmedFirstName ? { firstName: trimmedFirstName } : {}),
+      ...(trimmedLastName ? { lastName: trimmedLastName } : {}),
+    }).catch((err: unknown) => console.debug(err));
+
+    event({
+      type: 'CALLBACK_REQUEST',
+      channel: 'WEB',
+      language: 'EN',
+      currency: 'USD',
       extensionData: {
-        callbackRequested: true,
+        firstName: trimmedFirstName,
+        lastName: trimmedLastName,
+        email: trimmedEmail,
         phoneNumber: trimmedPhone,
       },
-    }).catch((err) => console.debug(err));
+    }).catch((err: unknown) => console.debug(err));
 
     setSubmitted(true);
     setTimeout(() => setSubmitted(false), 5000);

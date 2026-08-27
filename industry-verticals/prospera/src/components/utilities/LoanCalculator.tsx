@@ -2,6 +2,7 @@
 
 import { useState, useEffect, ReactNode, JSX } from 'react';
 import { Field, Text } from '@sitecore-content-sdk/nextjs';
+import { setLoanCalculatorSnapshot } from 'lib/loan-calculator-store';
 
 interface Fields {
   BankFee: Field<number>;
@@ -58,6 +59,28 @@ export const Default = (props: LoanCalculatorProps): JSX.Element => {
     const totalInterestCalculation = totalDebtCalculation - loanAmount - props.fields.BankFee.value;
     setTotalInterest(parseFloat(totalInterestCalculation.toFixed(2)));
   }, [loanAmount, loanTerm, props.fields.InterestRate.value, props.fields.BankFee.value]);
+
+  useEffect(() => {
+    setLoanCalculatorSnapshot({
+      loanAmount,
+      loanTerm,
+      monthlyPayment: Number(monthlyPayment.toFixed(2)),
+      totalDebt: Number(totalDebt.toFixed(2)),
+      totalInterest,
+      interestRate: props.fields.InterestRate.value,
+      bankFee: props.fields.BankFee.value,
+      currency: String(props.fields.Currency.value ?? ''),
+    });
+  }, [
+    loanAmount,
+    loanTerm,
+    monthlyPayment,
+    totalDebt,
+    totalInterest,
+    props.fields.InterestRate.value,
+    props.fields.BankFee.value,
+    props.fields.Currency.value,
+  ]);
 
   const sxaStyles = `${props.params?.styles || ''}`;
 

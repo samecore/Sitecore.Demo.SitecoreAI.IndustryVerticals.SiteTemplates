@@ -8,7 +8,8 @@ import {
   RichTextField,
   Text,
 } from '@sitecore-content-sdk/nextjs';
-import { event, identity } from '@sitecore-content-sdk/events';
+import { event } from '@sitecore-content-sdk/events';
+import { getLoanCalculatorSnapshot } from 'lib/loan-calculator-store';
 
 interface Fields {
   Title: Field<string>;
@@ -26,29 +27,15 @@ export type ApplicationFormProps = {
   fields: Fields;
 };
 
-const splitFullName = (fullName: string) => {
-  const trimmed = fullName.trim();
-  const spaceIndex = trimmed.indexOf(' ');
-  if (spaceIndex === -1) {
-    return { firstName: trimmed, lastName: '' };
-  }
-  return {
-    firstName: trimmed.slice(0, spaceIndex).trim(),
-    lastName: trimmed.slice(spaceIndex + 1).trim(),
-  };
-};
-
 export const Default = (props: ApplicationFormProps): JSX.Element => {
   const id = props.params.RenderingIdentifier;
   const sxaStyles = `${props.params?.styles || ''}`;
   const submitLabel = props.fields?.SubmitButton?.value?.text || 'Submit';
 
-  const [fullName, setFullName] = useState(String(props.fields?.FullName?.value ?? ''));
-  const [idNumber, setIdNumber] = useState(String(props.fields?.IDNumber?.value ?? ''));
-  const [email, setEmail] = useState(String(props.fields?.Email?.value ?? ''));
-  const [mobileNumber, setMobileNumber] = useState(
-    String(props.fields?.MobileNumber?.value ?? '')
-  );
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [email, setEmail] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
   const [error, setError] = useState('');
   const [showSuccessPopup, setShowSuccessPopup] = useState(false);
 
@@ -72,58 +59,50 @@ export const Default = (props: ApplicationFormProps): JSX.Element => {
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (!fullName.trim()) {
-      setError('Please enter your first and last name.');
+    if (!firstName.trim()) {
+      setError('Please enter your first name.');
       return;
     }
-    if (!idNumber.trim()) {
-      setError('Please enter your ID number.');
+    if (!lastName.trim()) {
+      setError('Please enter your last name.');
       return;
     }
     if (!email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
       setError('Please enter a valid email address.');
       return;
     }
-    if (!mobileNumber.trim()) {
-      setError('Please enter your mobile number.');
+    if (!phoneNumber.trim()) {
+      setError('Please enter your phone number.');
       return;
     }
 
     setError('');
 
-    const { firstName, lastName } = splitFullName(fullName);
+    const trimmedFirstName = firstName.trim();
+    const trimmedLastName = lastName.trim();
+    const trimmedEmail = email.trim();
+    const trimmedPhone = phoneNumber.trim();
+    const loanDetails = getLoanCalculatorSnapshot();
 
-    // Resolve / enrich the guest profile in CDP
-    identity({
-      channel: 'WEB',
-      language: 'EN',
-      currency: 'USD',
-      email: email.trim(),
-      identifiers: [{ id: email.trim(), provider: 'email' }],
-      ...(firstName ? { firstName } : {}),
-      ...(lastName ? { lastName } : {}),
-      ...(mobileNumber.trim() ? { phone: mobileNumber.trim() } : {}),
-    }).catch((err) => console.debug(err));
-
-    // Track the application submission as a custom event
     event({
-      type: 'APPLICATION_FORM_SUBMIT',
+      type: 'LOAN_APPLICATION',
       channel: 'WEB',
       language: 'EN',
       currency: 'USD',
       extensionData: {
-        fullName: fullName.trim(),
-        idNumber: idNumber.trim(),
-        email: email.trim(),
-        mobileNumber: mobileNumber.trim(),
+        firstName: trimmedFirstName,
+        lastName: trimmedLastName,
+        email: trimmedEmail,
+        phoneNumber: trimmedPhone,
+        ...(loanDetails ? { loanCalculator: loanDetails } : {}),
       },
     }).catch((err) => console.debug(err));
 
     setShowSuccessPopup(true);
-    setFullName('');
-    setIdNumber('');
+    setFirstName('');
+    setLastName('');
     setEmail('');
-    setMobileNumber('');
+    setPhoneNumber('');
   };
 
   return (
@@ -140,19 +119,19 @@ export const Default = (props: ApplicationFormProps): JSX.Element => {
           <form onSubmit={handleSubmit}>
             <input
               className="input-field"
-              value={fullName}
-              onChange={(e) => setFullName(e.target.value)}
-              placeholder="First and Last name"
-              name="fullName"
-              autoComplete="name"
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
+              placeholder="First name"
+              name="firstName"
+              autoComplete="given-name"
             />
             <input
               className="input-field"
-              value={idNumber}
-              onChange={(e) => setIdNumber(e.target.value)}
-              placeholder="ID number"
-              name="idNumber"
-              autoComplete="off"
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
+              placeholder="Last name"
+              name="lastName"
+              autoComplete="family-name"
             />
             <input
               className="input-field"
@@ -166,10 +145,10 @@ export const Default = (props: ApplicationFormProps): JSX.Element => {
             <input
               className="input-field"
               type="tel"
-              value={mobileNumber}
-              onChange={(e) => setMobileNumber(e.target.value)}
-              placeholder="Mobile number"
-              name="mobileNumber"
+              value={phoneNumber}
+              onChange={(e) => setPhoneNumber(e.target.value)}
+              placeholder="Phone number"
+              name="phoneNumber"
               autoComplete="tel"
             />
             <div className="footnote">

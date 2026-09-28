@@ -41,6 +41,7 @@ const createHeroBannerFields = () => ({
   Description: createRichTextField(1, 'paragraphs'),
   CtaLink: createLinkField('View Grid Status'),
   SecondaryCtaLink: createLinkField('Learn More'),
+  '3rdCtaLink': createLinkField('Unified Systems Guide'),
 });
 
 export const Default: Story = {

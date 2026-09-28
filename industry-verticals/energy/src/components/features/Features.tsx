@@ -3,9 +3,11 @@
 import { IGQLImageField, IGQLRichTextField, IGQLTextField, IGQLLinkField } from 'src/types/igql';
 import {
   Text as ContentSdkText,
+  RichText as ContentSdkRichText,
   NextImage as ContentSdkImage,
   Link as ContentSdkLink,
   withDatasourceCheck,
+  useSitecore,
   ComponentRendering,
   ComponentParams,
 } from '@sitecore-content-sdk/nextjs';
@@ -37,78 +39,121 @@ type FeaturesProps = {
   fields: Fields;
 };
 
-const FeatureItem = ({
+const FeaturesHeader = ({
+  title,
+  description,
+  isEditing,
+}: {
+  title?: IGQLTextField;
+  description?: IGQLRichTextField;
+  isEditing: boolean;
+}) => {
+  const titleField = title?.jsonValue;
+  const descriptionField = description?.jsonValue;
+
+  return (
+    <div className="features-header">
+      {(titleField?.value || isEditing) && (
+        <h2 className="features-heading">
+          <ContentSdkText field={titleField} />
+        </h2>
+      )}
+      {(descriptionField?.value || isEditing) && (
+        <div className="features-description">
+          <ContentSdkRichText field={descriptionField} />
+        </div>
+      )}
+    </div>
+  );
+};
+
+const DefaultFeatureItem = ({
   feature,
-  layout = 'vertical',
+  isEditing,
 }: {
   feature: FeatureFields;
-  layout: 'vertical' | 'horizontal';
+  isEditing: boolean;
 }) => {
-  if (layout === 'horizontal') {
-    // Card variant: horizontal layout with button
-    return (
-      <li key={feature?.id} className="border-border flex flex-col gap-4 rounded-lg border p-6">
-        <div className="mb-3.5 flex items-center gap-1">
-          <ContentSdkImage
-            field={feature?.featureImage?.jsonValue}
-            className="h-8 w-8 flex-shrink-0 object-contain"
-          />
-          <h5 className="text-base leading-none font-bold">
-            <ContentSdkText field={feature?.featureTitle?.jsonValue} />
-          </h5>
-        </div>
-        <p>
-          <ContentSdkText field={feature?.featureDescription?.jsonValue} />
-        </p>
-        {feature?.featureLink?.jsonValue ? (
-          <div className="mt-2">
-            <ContentSdkLink field={feature.featureLink.jsonValue} className="outline-btn" />
-          </div>
-        ) : null}
-      </li>
-    );
-  }
+  const { featureTitle, featureDescription, featureImage, featureLink } = feature || {};
+  const title = featureTitle?.jsonValue;
+  const description = featureDescription?.jsonValue;
+  const image = featureImage?.jsonValue;
+  const link = featureLink?.jsonValue;
 
-  // Default variant: vertical layout with icon on left
   return (
-    <li
-      key={feature?.id}
-      className="border-border bg-background flex flex-col gap-4 rounded-lg border p-6"
-    >
-      <div className="flex items-start gap-4">
-        <div className="flex h-16 w-16 shrink-0 items-center justify-center">
-          <ContentSdkImage
-            field={feature?.featureImage?.jsonValue}
-            className="h-full w-full object-contain"
-          />
-        </div>
-        <div className="flex-1">
-          <h5 className="mb-2 text-base font-semibold">
-            <ContentSdkText field={feature?.featureTitle?.jsonValue} />
-          </h5>
-          <p className="text-foreground-light">
-            <ContentSdkText field={feature?.featureDescription?.jsonValue} />
-          </p>
+    <li className="features-default-item">
+      <div className="features-default-item-inner">
+        {(image?.value?.src || isEditing) && (
+          <div className="features-default-icon">
+            <ContentSdkImage field={image} className="features-default-icon-image" />
+          </div>
+        )}
+        <div className="features-default-copy">
+          {(title?.value || isEditing) && (
+            <h3 className="features-default-item-title">
+              <ContentSdkText field={title} />
+            </h3>
+          )}
+          {(description?.value || isEditing) && (
+            <p className="features-default-item-description">
+              <ContentSdkText field={description} />
+            </p>
+          )}
+          {(link?.value?.href || link?.value?.text || isEditing) && (
+            <div className="features-default-item-action">
+              <ContentSdkLink field={link} className="outline-btn" />
+            </div>
+          )}
         </div>
       </div>
     </li>
   );
 };
 
-const DefaultFeatures = ({ fields, params }: FeaturesProps) => {
-  const id = params?.RenderingIdentifier;
-  const features = fields?.data?.datasource?.children?.results;
+const CardFeatureItem = ({
+  feature,
+  isEditing,
+}: {
+  feature: FeatureFields;
+  isEditing: boolean;
+}) => {
+  const { featureTitle, featureImage } = feature || {};
+  const title = featureTitle?.jsonValue;
+  const image = featureImage?.jsonValue;
 
   return (
-    <section className={`relative py-10 lg:py-16 ${params?.styles || ''}`} id={id || undefined}>
-      <div className="container">
-        <h2 className="mb-4 text-center text-3xl font-bold">
-          <ContentSdkText field={fields?.data?.datasource?.title?.jsonValue} />
-        </h2>
+    <li className="features-card">
+      <div className="features-card-media">
+        {(image?.value?.src || isEditing) && (
+          <ContentSdkImage field={image} className="features-card-image" />
+        )}
+        {(title?.value || isEditing) && (
+          <h3 className="features-card-title">
+            <ContentSdkText field={title} />
+          </h3>
+        )}
+      </div>
+    </li>
+  );
+};
 
-        <ul className="mt-12 grid gap-6 lg:grid-cols-2">
+const DefaultFeatures = ({ fields, params }: FeaturesProps) => {
+  const { page } = useSitecore();
+  const isEditing = page.mode.isEditing;
+  const id = params?.RenderingIdentifier;
+  const { title, description, children } = fields?.data?.datasource || {};
+  const features = children?.results;
+
+  return (
+    <section
+      className={`component features features--default ${params?.styles || ''}`}
+      id={id || undefined}
+    >
+      <div className="features-inner">
+        <FeaturesHeader title={title} description={description} isEditing={isEditing} />
+        <ul className="features-default-grid">
           {features?.map((feature) => (
-            <FeatureItem key={feature.id} feature={feature} layout="vertical" />
+            <DefaultFeatureItem key={feature.id} feature={feature} isEditing={isEditing} />
           ))}
         </ul>
       </div>
@@ -117,22 +162,26 @@ const DefaultFeatures = ({ fields, params }: FeaturesProps) => {
 };
 
 const CardFeatures = ({ fields, params }: FeaturesProps) => {
+  const { page } = useSitecore();
+  const isEditing = page.mode.isEditing;
   const id = params?.RenderingIdentifier;
-  const features = fields?.data?.datasource?.children?.results;
+  const { title, description, children } = fields?.data?.datasource || {};
+  const features = children?.results;
 
   return (
-    <div className={`relative py-10 lg:py-16 ${params?.styles || ''}`} id={id || undefined}>
-      <div className="container">
-        <h2 className="mb-6 text-3xl font-bold">
-          <ContentSdkText field={fields?.data?.datasource?.title?.jsonValue} />
-        </h2>
-        <ul className="grid gap-6 lg:grid-cols-3">
+    <section
+      className={`component features features--card ${params?.styles || ''}`}
+      id={id || undefined}
+    >
+      <div className="features-inner">
+        <FeaturesHeader title={title} description={description} isEditing={isEditing} />
+        <ul className="features-card-grid">
           {features?.map((feature) => (
-            <FeatureItem key={feature.id} feature={feature} layout="horizontal" />
+            <CardFeatureItem key={feature.id} feature={feature} isEditing={isEditing} />
           ))}
         </ul>
       </div>
-    </div>
+    </section>
   );
 };
 

@@ -37,7 +37,7 @@ export const Default = (props: SocialFollowProps) => {
   ];
 
   return (
-    <div className="flex space-x-4" id={id}>
+    <div className="social-follow flex space-x-4" id={id}>
       {socialLinks.map(({ icon, field, key }) => (
         <ContentSdkLink field={field} key={key}>
           <FontAwesomeIcon

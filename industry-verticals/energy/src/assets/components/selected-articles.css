@@ -1,0 +1,244 @@
+.component.selected-articles {
+  --articles-ink: #1a1a1d;
+  --articles-muted: #717288;
+  --articles-teal: #0ab3a1;
+  --articles-display: 'Oswald', 'Roboto', sans-serif;
+  --articles-ui: 'Roboto', 'Open Sans', sans-serif;
+
+  position: relative;
+  width: 100%;
+  padding: 100px 0;
+  overflow: hidden;
+  color: var(--articles-ink);
+  background-color: rgba(151, 152, 169, 0.15);
+  background-image: url('/selected-articles/announcements-bg.svg');
+  background-position: 50% 100%;
+  background-repeat: no-repeat;
+  background-size: 100%;
+}
+
+.component.selected-articles .selected-articles-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 0 70px;
+  margin-bottom: 48px;
+}
+
+.component.selected-articles .selected-articles-heading-block {
+  max-width: 720px;
+}
+
+.component.selected-articles .selected-articles-heading {
+  margin: 0;
+  color: var(--articles-ink);
+  font-family: var(--articles-display);
+  font-size: clamp(2.25rem, 5vw, 4.5rem);
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  line-height: 0.9;
+  text-transform: uppercase;
+}
+
+.component.selected-articles .selected-articles-description,
+.component.selected-articles .selected-articles-description p,
+.component.selected-articles .selected-articles-description .ck-content {
+  margin: 16px 0 0;
+  color: var(--articles-ink);
+  font-family: var(--articles-ui);
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 28px;
+  text-align: left;
+}
+
+.component.selected-articles .selected-articles-nav {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.component.selected-articles .selected-articles-nav-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 50px;
+  padding: 0;
+  border: 1px solid var(--articles-teal);
+  border-radius: 25px;
+  background: var(--articles-teal);
+  color: #fff;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.component.selected-articles .selected-articles-nav-btn svg {
+  width: 20px;
+  height: 20px;
+}
+
+.component.selected-articles .selected-articles-nav-btn:not(.is-inactive):hover {
+  background: #fff;
+  color: var(--articles-teal);
+}
+
+.component.selected-articles .selected-articles-nav-btn.is-inactive {
+  background: #fff;
+  color: var(--articles-teal);
+  cursor: default;
+}
+
+.component.selected-articles .selected-articles-carousel {
+  overflow: hidden;
+}
+
+.component.selected-articles .selected-articles-slide {
+  width: 26.25rem;
+  height: auto;
+}
+
+.component.selected-articles .selected-articles-card {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  background: #fff;
+}
+
+.component.selected-articles .selected-articles-card-media {
+  width: 100%;
+  aspect-ratio: 420 / 253;
+  overflow: hidden;
+  background: #00093f;
+}
+
+.component.selected-articles .selected-articles-card-image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.component.selected-articles .selected-articles-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 30px 30px 50px;
+}
+
+.component.selected-articles .selected-articles-card-date {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  color: var(--articles-muted);
+  font-family: var(--articles-ui);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.component.selected-articles .selected-articles-card-date-dot {
+  display: block;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--articles-muted);
+}
+
+.component.selected-articles .selected-articles-card-title {
+  margin: 0;
+  color: var(--articles-ink);
+  font-family: var(--articles-ui);
+  font-size: 20px;
+  font-weight: 500;
+  letter-spacing: 0.2px;
+  line-height: 30px;
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.component.selected-articles .selected-articles-card-excerpt {
+  margin: -10px 0 0;
+  color: var(--articles-muted);
+  font-family: var(--articles-ui);
+  font-size: 18px;
+  letter-spacing: 0.18px;
+  line-height: 1.6;
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
+
+.component.selected-articles .selected-articles-card-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 20px;
+  color: var(--articles-teal);
+  font-family: var(--articles-ui);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 1.04px;
+  line-height: 1.55;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.component.selected-articles .selected-articles-card-link-icon {
+  width: 20px;
+  height: 20px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none'%3E%3Cpath fill='%230AB3A1' fill-rule='evenodd' d='M7.3 4.3a1 1 0 0 1 1.4 0l5 5a1 1 0 0 1 0 1.4l-5 5a1 1 0 1 1-1.4-1.4L11.58 10 7.3 5.7a1 1 0 0 1 0-1.4Z' clip-rule='evenodd'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 20px;
+}
+
+.component.selected-articles .selected-articles-card-link:hover {
+  color: #088f81;
+}
+
+@media (max-width: 1023px) {
+  .component.selected-articles {
+    padding: 64px 0;
+  }
+
+  .component.selected-articles .selected-articles-header {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 0 20px;
+    margin-bottom: 32px;
+  }
+
+  .component.selected-articles .selected-articles-description,
+  .component.selected-articles .selected-articles-description p,
+  .component.selected-articles .selected-articles-description .ck-content {
+    font-size: 13px;
+    line-height: 20px;
+  }
+
+  .component.selected-articles .selected-articles-slide {
+    width: 15rem;
+  }
+
+  .component.selected-articles .selected-articles-card-body {
+    padding: 20px 20px 30px;
+    gap: 16px;
+  }
+
+  .component.selected-articles .selected-articles-card-title {
+    font-size: 16px;
+    line-height: 22px;
+  }
+
+  .component.selected-articles .selected-articles-card-excerpt {
+    font-size: 14px;
+  }
+}

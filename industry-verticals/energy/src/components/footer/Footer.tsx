@@ -23,6 +23,7 @@ interface Fields {
   ContactText: LinkField;
   TermsText: LinkField;
   Logo: ImageField;
+  LogoDark?: ImageField;
   Description: RichTextField;
 }
 
@@ -32,89 +33,160 @@ type FooterProps = {
   fields: Fields;
 };
 
+const WORDMARK_SRC =
+  'https://same-taqa.sitecoresandbox.cloud/api/public/content/cbf719051bed4e7c8de1b8418ecddef8?v=68931673';
+const APP_STORE_IMAGE_SRC =
+  'https://same-taqa.sitecoresandbox.cloud/api/public/content/299826e333e9469cbfe05a6aba6fc6fd?v=b4f47087';
+const GOOGLE_PLAY_IMAGE_SRC =
+  'https://same-taqa.sitecoresandbox.cloud/api/public/content/eee6b912701544148246c5edd083ec65?v=8929e8dd';
+
+const getImageSrc = (image?: ImageField): string => {
+  if (!image?.value || typeof image.value !== 'object') {
+    return '';
+  }
+
+  return image.value.src || '';
+};
+
+const getWordmarkField = (image?: ImageField): ImageField => {
+  if (getImageSrc(image)) {
+    return image as ImageField;
+  }
+
+  return {
+    value: {
+      src: WORDMARK_SRC,
+      alt: 'TAQA Distribution',
+      width: '751',
+      height: '342',
+    },
+  };
+};
+
+const hasLinkText = (link?: LinkField): boolean => {
+  const value = link?.value;
+  return Boolean(value && (value.text || value.href));
+};
+
+/**
+ * Footer chrome matched to the TAQA Distribution three-row layout.
+ * Sitecore logo, legal links, and list placeholders are kept.
+ */
 const Footer = (props: FooterProps): JSX.Element => {
-  // styles
+  const { fields } = props || {};
+  const {
+    TitleOne,
+    TitleTwo,
+    TitleThree,
+    CopyrightText,
+    PolicyText,
+    CookiesText,
+    ContactText,
+    TermsText,
+    Logo,
+    LogoDark,
+    Description,
+  } = fields || {};
+
   const sxaStyles = `${props.params?.styles || ''}`;
-
-  // rendering item id
   const id = props.params.RenderingIdentifier;
-
-  // placeholders keys
   const phKeyOne = `footer-list-first-${props?.params?.DynamicPlaceholderId}`;
   const phKeyTwo = `footer-list-second-${props?.params?.DynamicPlaceholderId}`;
   const phKeyThree = `footer-list-third-${props?.params?.DynamicPlaceholderId}`;
   const phKeyFour = `footer-list-fourth-${props?.params?.DynamicPlaceholderId}`;
+  const wordmark = getWordmarkField(LogoDark);
 
   const sections = [
     {
       key: 'first_nav',
-      title: <ContentSdkText field={props.fields.TitleOne} />,
+      title: <ContentSdkText field={TitleOne} />,
       content: <Placeholder name={phKeyOne} rendering={props.rendering} />,
     },
     {
       key: 'second_nav',
-      title: <ContentSdkText field={props.fields.TitleTwo} />,
+      title: <ContentSdkText field={TitleTwo} />,
       content: <Placeholder name={phKeyTwo} rendering={props.rendering} />,
     },
     {
       key: 'third_nav',
-      title: <ContentSdkText field={props.fields.TitleThree} />,
+      title: <ContentSdkText field={TitleThree} />,
       content: <Placeholder name={phKeyThree} rendering={props.rendering} />,
     },
   ];
 
+  const legalLinks = [
+    { key: 'contact', field: ContactText },
+    { key: 'cookies', field: CookiesText },
+    { key: 'policy', field: PolicyText },
+    { key: 'terms', field: TermsText },
+  ].filter((item) => hasLinkText(item.field));
+
   return (
-    <div className={`bg-foreground py-12 text-white ${sxaStyles}`} id={id}>
-      <div className="container mx-auto">
-        {/* content section */}
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
-          {/* footer content data */}
-          <div>
-            <div className="mb-4 flex max-w-40 space-x-2">
-              <ContentSdkImage field={props.fields.Logo} width={200} />
-            </div>
-            <div className="**:text-foreground-secondary mb-4">
-              <RichText field={props.fields.Description} />
-            </div>
-            <Placeholder name={phKeyFour} rendering={props.rendering} />
+    <div className={`component footer ${sxaStyles}`} id={id}>
+      <div className="footer-row-apps">
+        <div className="footer-purple" aria-hidden="true" />
+        <div className="footer-apps-panel">
+          <p className="footer-apps-copy">Download our apps</p>
+          <div className="footer-store-badges">
+            <a
+              className="footer-store-badge"
+              href="https://apps.apple.com"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img src={APP_STORE_IMAGE_SRC} alt="Download on the App Store" />
+            </a>
+            <a
+              className="footer-store-badge"
+              href="https://play.google.com"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img src={GOOGLE_PLAY_IMAGE_SRC} alt="Get it on Google Play" />
+            </a>
           </div>
-
-          {/* footer link lists */}
-          {sections.map(({ key, title, content }) => (
-            <div key={key}>
-              <div className="mb-4 text-lg font-semibold">{title}</div>
-              <div className="text-foreground-secondary">{content}</div>
-            </div>
-          ))}
         </div>
+      </div>
 
-        {/* seperator */}
-        <hr className="border-foreground-light my-8" />
+      <div className="footer-row-brands">
+        <div className="footer-brand-left">
+          <ContentSdkImage field={Logo} width={200} />
+        </div>
+        <div className="footer-brand-right">
+          <ContentSdkImage field={wordmark} width={250} height={114} />
+        </div>
+      </div>
 
-        {/* copyright section */}
-        <div className="flex flex-col items-center justify-between md:flex-row">
-          <p className="text-foreground-secondary order-2 mt-8 text-sm md:order-1 md:mt-0">
-            <ContentSdkText field={props.fields.CopyrightText} />
+      <div className="footer-meta">
+        <div className="footer-follow">
+          <p className="footer-follow-title">Follow us</p>
+          <Placeholder name={phKeyFour} rendering={props.rendering} />
+        </div>
+        <div className="footer-bottom">
+          <div className="footer-legal">
+            {legalLinks.map((item, index) => (
+              <React.Fragment key={item.key}>
+                {index > 0 && <span className="footer-legal-sep">|</span>}
+                <ContentSdkLink field={item.field} />
+              </React.Fragment>
+            ))}
+          </div>
+          <p className="footer-copyright">
+            <ContentSdkText field={CopyrightText} />
           </p>
-          <div className="mt-4 grid grid-cols-2 justify-between gap-6 md:order-2 md:mt-0 md:flex">
-            <ContentSdkLink
-              className="text-foreground-secondary hover:text-background text-sm"
-              field={props.fields.PolicyText}
-            />
-            <ContentSdkLink
-              className="text-foreground-secondary hover:text-background text-sm"
-              field={props.fields.TermsText}
-            />
-            <ContentSdkLink
-              className="text-foreground-secondary hover:text-background text-sm"
-              field={props.fields.CookiesText}
-            />
-            <ContentSdkLink
-              className="text-foreground-secondary hover:text-background text-sm"
-              field={props.fields.ContactText}
-            />
-          </div>
         </div>
+      </div>
+
+      <div className="footer-description">
+        <RichText field={Description} />
+      </div>
+      <div className="footer-sitecore-lists">
+        {sections.map(({ key, title, content }) => (
+          <div key={key}>
+            <div>{title}</div>
+            <div>{content}</div>
+          </div>
+        ))}
       </div>
     </div>
   );

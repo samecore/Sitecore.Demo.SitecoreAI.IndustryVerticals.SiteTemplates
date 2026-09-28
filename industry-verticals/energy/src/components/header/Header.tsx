@@ -13,72 +13,98 @@ export type HeaderProps = ComponentProps & {
   params: { [key: string]: string };
 };
 
+const UTILITY_ITEMS = [
+  { id: 'residential', label: 'Residential', active: true },
+  { id: 'business', label: 'Business' },
+  { id: 'partners', label: 'Partners' },
+  { id: 'group', label: 'TAQA Group' },
+] as const;
+
+/**
+ * Site header chrome styled after TAQA Distribution.
+ * Sitecore placeholders keep existing logo and Home navigation items.
+ */
 export const Default = (props: HeaderProps): JSX.Element => {
   const { styles, RenderingIdentifier: id, DynamicPlaceholderId } = props.params;
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  // Close search when route changes
   useEffect(() => {
     setIsSearchOpen(false);
   }, [pathname, searchParams]);
 
   return (
-    <div className={`component header bg-background border-b ${styles}`} id={id}>
-      <div className="container flex items-center gap-4 py-4 lg:gap-6">
-        <div className="header-block *:shrink max-lg:w-full max-lg:justify-between lg:shrink-0">
-          <Placeholder name={`header-left-${DynamicPlaceholderId}`} rendering={props.rendering} />
-        </div>
-        <div className="hidden! lg:flex! lg:shrink lg:basis-full">
-          <Placeholder name={`header-nav-${DynamicPlaceholderId}`} rendering={props.rendering} />
-        </div>
-
-        {/* Search Button */}
+    <div className={`component header ${styles}`} id={id}>
+      <div className="header-utility">
+        <button type="button" className="header-utility-item header-utility-outages">
+          Outages and Maintenance
+        </button>
+        {UTILITY_ITEMS.map((item) => (
+          <button
+            key={item.id}
+            type="button"
+            className={item.active ? 'header-utility-item is-active' : 'header-utility-item'}
+          >
+            {item.label}
+          </button>
+        ))}
+        <button type="button" className="header-utility-item" aria-label="Switch to Arabic">
+          عربي
+        </button>
         <button
+          type="button"
+          className="header-utility-item header-utility-icon"
+          aria-label="Open search"
           onClick={() => setIsSearchOpen(!isSearchOpen)}
-          className="text-gray-700 transition-colors hover:text-blue-600"
         >
           <Search className="size-5" />
         </button>
+      </div>
 
-        {/* Mobile Drawer Trigger */}
-        <div className="lg:hidden">
-          <Drawer direction="left">
-            <DrawerTrigger asChild>
-              <button
-                type="button"
-                aria-label="Open menu"
-                className="text-foreground hover:text-foreground-light p-2 transition-colors"
-              >
-                <Menu className="h-6 w-6" />
-              </button>
-            </DrawerTrigger>
-
-            <DrawerContent className="bg-background-accent w-xl! max-w-full! p-5">
-              <div className="flex h-full flex-col">
-                <div className="mb-14 flex items-center justify-between self-end">
-                  <DrawerClose asChild>
-                    <button type="button" aria-label="Close menu">
-                      <X className="h-5 w-5" />
-                    </button>
-                  </DrawerClose>
+      <div className="header-main">
+        <div className="header-logo">
+          <Placeholder name={`header-left-${DynamicPlaceholderId}`} rendering={props.rendering} />
+        </div>
+        <div className="header-nav">
+          <Placeholder name={`header-nav-${DynamicPlaceholderId}`} rendering={props.rendering} />
+        </div>
+        <div className="header-actions">
+          <div className="lg:hidden">
+            <Drawer direction="left">
+              <DrawerTrigger asChild>
+                <button
+                  type="button"
+                  aria-label="Open menu"
+                  className="header-menu-trigger p-2 transition-colors"
+                >
+                  <Menu className="h-6 w-6" />
+                </button>
+              </DrawerTrigger>
+              <DrawerContent className="w-xl! max-w-full! bg-white p-5">
+                <div className="flex h-full flex-col">
+                  <div className="mb-10 flex items-center justify-between self-end">
+                    <DrawerClose asChild>
+                      <button type="button" aria-label="Close menu">
+                        <X className="h-5 w-5" />
+                      </button>
+                    </DrawerClose>
+                  </div>
+                  <div className="flex flex-col gap-y-6 px-8">
+                    <Placeholder
+                      name={`header-nav-${DynamicPlaceholderId}`}
+                      rendering={props.rendering}
+                    />
+                  </div>
                 </div>
-
-                <div className="mb-6 flex flex-col gap-y-6 px-12">
-                  <Placeholder
-                    name={`header-nav-${DynamicPlaceholderId}`}
-                    rendering={props.rendering}
-                  />
-                </div>
-              </div>
-            </DrawerContent>
-          </Drawer>
+              </DrawerContent>
+            </Drawer>
+          </div>
         </div>
       </div>
 
       {isSearchOpen && (
-        <div className="border-border bg-background absolute top-full right-0 left-0 z-50 border-b shadow-lg">
+        <div className="absolute top-full right-0 left-0 z-50 border-b border-[#e5e5e5] bg-white shadow-lg">
           <div className="mx-auto max-w-7xl px-4 py-4">
             <div className="flex items-center gap-2">
               <PreviewSearch
@@ -86,10 +112,9 @@ export const Default = (props: HeaderProps): JSX.Element => {
                 isOpen={isSearchOpen}
                 setIsSearchOpen={setIsSearchOpen}
               />
-
               <button
                 onClick={() => setIsSearchOpen(false)}
-                className="text-foreground-muted hover:text-foreground p-3 transition-colors"
+                className="p-3 text-[#1a1a1d] transition-colors hover:text-[#0ab3a1]"
               >
                 <X className="size-5" />
               </button>

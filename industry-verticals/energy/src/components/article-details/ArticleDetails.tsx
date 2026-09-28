@@ -14,6 +14,7 @@ import { useEffect, useState } from 'react';
 import SocialShare from '../non-sitecore/SocialShare';
 import { newsDateFormatter } from '@/helpers/dateHelper';
 import { ArticleFields } from '@/types/article';
+import { ServiceAlertForm } from '../non-sitecore/ServiceAlertForm';
 
 interface ArticleDetailsProps extends ComponentProps {
   fields: ArticleFields;
@@ -99,6 +100,8 @@ export const Default = ({ params, fields, rendering }: ArticleDetailsProps) => {
           <div>
             <ContentSdkRichText field={fields?.Content} />
           </div>
+
+          <ServiceAlertForm articleTitle={fields?.Title?.value} />
         </div>
       </article>
 

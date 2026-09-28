@@ -45,6 +45,11 @@ const nextConfig = {
       },
       {
         protocol: 'https',
+        hostname: 'same-taqa.sitecoresandbox.cloud',
+        port: '',
+      },
+      {
+        protocol: 'https',
         hostname: 'placehold.co',
         port: '',
       },

@@ -1,91 +1,181 @@
-import React, { JSX } from 'react';
 import {
-  NextImage as ContentSdkImage,
-  RichText as ContentSdkRichText,
-  Link as ContentSdkLink,
+  Text as ContentSdkText,
+  Field,
   ImageField,
   LinkField,
+  NextImage as ContentSdkImage,
+  RichText as ContentSdkRichText,
   RichTextField,
-  Text as ContentSdkText,
-  TextField,
+  useSitecore,
 } from '@sitecore-content-sdk/nextjs';
-import { ComponentProps } from 'lib/component-props';
-import { LayoutStyles } from '@/types/styleFlags';
+import { ComponentProps } from '@/lib/component-props';
+
+type TextField = Field<string>;
 
 interface Fields {
   PromoImageOne: ImageField;
+  PromoImageTwo?: ImageField;
+  PromoImageThree?: ImageField;
   PromoTitle: TextField;
   PromoSubTitle: TextField;
   PromoDescription: RichTextField;
   PromoMoreInfo: LinkField;
+  AppstoreTitle?: TextField;
 }
 
 export type PromoProps = ComponentProps & {
   fields: Fields;
 };
 
-export const Default = (props: PromoProps): JSX.Element => {
-  const id = props.params.RenderingIdentifier;
-  const sxaStyles = `${props.params?.styles || ''}`;
-  const isPromoReversed = sxaStyles?.includes(LayoutStyles.Reversed) ? 'lg:order-last' : '';
+const APP_STORE_HREF = 'https://apps.apple.com';
+const GOOGLE_PLAY_HREF = 'https://play.google.com';
+
+const hasImage = (field?: ImageField): boolean => Boolean(field?.value?.src);
+const hasText = (field?: TextField | RichTextField): boolean => Boolean(field?.value);
+
+const StoreBadgeLink = ({
+  field,
+  href,
+  isEditing,
+}: {
+  field?: ImageField;
+  href: string;
+  isEditing: boolean;
+}) => {
+  if (!hasImage(field) && !isEditing) {
+    return null;
+  }
 
   return (
-    <div className={`${sxaStyles}`} id={id}>
-      <div className="container">
-        <div className="my-12 grid overflow-hidden rounded-xl border shadow transition-shadow hover:shadow-lg lg:grid-cols-2">
-          {/* Image Section */}
-          <div className={`relative flex items-stretch ${isPromoReversed}`}>
-            <ContentSdkImage
-              field={props.fields.PromoImageOne}
-              className="inset-0 h-full w-full object-cover max-lg:h-64 lg:absolute"
-            />
-          </div>
-          <div className="flex flex-col justify-center p-6 lg:p-20">
-            <span className="text-accent-dark mb-1 text-sm font-bold">
-              <ContentSdkText field={props.fields.PromoSubTitle} />
-            </span>
-            <h4>
-              <ContentSdkText field={props.fields.PromoTitle} />
-            </h4>
-            <div className="mt-4 mb-6">
-              <ContentSdkRichText field={props.fields.PromoDescription} />
-            </div>
-            <ContentSdkLink field={props.fields.PromoMoreInfo} className="main-btn" />
-          </div>
+    <a className="promo-store-link" href={href} target="_blank" rel="noopener noreferrer">
+      <ContentSdkImage field={field} className="promo-store-badge" />
+    </a>
+  );
+};
+
+export const Default = (props: PromoProps) => {
+  const { page } = useSitecore();
+  const { styles, RenderingIdentifier: id } = props.params;
+  const isEditing = page.mode.isEditing;
+  const { fields } = props;
+
+  if (!fields) {
+    return isEditing ? (
+      <div className={`component promo ${styles}`} id={id}>
+        [PROMO]
+      </div>
+    ) : (
+      <></>
+    );
+  }
+
+  const {
+    PromoImageOne,
+    PromoImageTwo,
+    PromoImageThree,
+    PromoTitle,
+    PromoSubTitle,
+    PromoDescription,
+    AppstoreTitle,
+  } = fields || {};
+
+  const showStores =
+    isEditing || hasImage(PromoImageTwo) || hasImage(PromoImageThree) || hasText(AppstoreTitle);
+
+  return (
+    <div className={`component promo ${styles}`} id={id ? id : undefined}>
+      {(hasImage(PromoImageOne) || isEditing) && (
+        <div className="promo-media">
+          <ContentSdkImage field={PromoImageOne} className="promo-media-asset" />
         </div>
+      )}
+
+      <div className="promo-content">
+        {(hasText(PromoSubTitle) || isEditing) && (
+          <ContentSdkText field={PromoSubTitle} tag="p" className="promo-subtitle" />
+        )}
+
+        <div className="promo-main">
+          {(hasText(PromoTitle) || isEditing) && (
+            <ContentSdkText field={PromoTitle} tag="h2" className="promo-title" />
+          )}
+          {(hasText(PromoDescription) || isEditing) && (
+            <ContentSdkRichText field={PromoDescription} className="promo-description" />
+          )}
+        </div>
+
+        {showStores && (
+          <div className="promo-app">
+            {(hasText(AppstoreTitle) || isEditing) && (
+              <ContentSdkText field={AppstoreTitle} tag="p" className="promo-app-title" />
+            )}
+            <div className="promo-app-stores">
+              <StoreBadgeLink field={PromoImageTwo} href={APP_STORE_HREF} isEditing={isEditing} />
+              <StoreBadgeLink
+                field={PromoImageThree}
+                href={GOOGLE_PLAY_HREF}
+                isEditing={isEditing}
+              />
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
 };
 
-export const Stacked = (props: PromoProps): JSX.Element => {
-  const id = props.params.RenderingIdentifier;
-  const sxaStyles = `${props.params?.styles || ''}`;
-  const isPromoReversed = sxaStyles?.includes(LayoutStyles.Reversed) ? 'lg:order-last' : '';
+export const Stacked = (props: PromoProps) => {
+  const { page } = useSitecore();
+  const { styles, RenderingIdentifier: id } = props.params;
+  const isEditing = page.mode.isEditing;
+  const { fields } = props;
+
+  if (!fields) {
+    return isEditing ? (
+      <div className={`component promo promo-stacked ${styles}`} id={id}>
+        [PROMO]
+      </div>
+    ) : (
+      <></>
+    );
+  }
+
+  const {
+    PromoImageOne,
+    PromoImageTwo,
+    PromoImageThree,
+    PromoTitle,
+    PromoSubTitle,
+    PromoDescription,
+  } = fields || {};
+
+  const showStores = isEditing || hasImage(PromoImageTwo) || hasImage(PromoImageThree);
 
   return (
-    <div className={`${sxaStyles}`} id={id}>
-      <div className="container">
-        <div className="my-12 grid overflow-hidden rounded-xl border shadow transition-shadow hover:shadow-lg">
-          <div className={`relative flex items-stretch ${isPromoReversed}`}>
-            <ContentSdkImage
-              field={props.fields.PromoImageOne}
-              className="h-64 w-full object-cover"
-            />
+    <div className={`component promo promo-stacked ${styles}`} id={id ? id : undefined}>
+      <div className="promo-stack">
+        {(hasImage(PromoImageOne) || isEditing) && (
+          <div className="promo-stack-image">
+            <ContentSdkImage field={PromoImageOne} className="promo-stack-image-asset" />
           </div>
-          <div className="flex flex-col justify-center p-6 lg:p-12">
-            <span className="text-accent-dark mb-1 text-sm font-bold">
-              <ContentSdkText field={props.fields.PromoSubTitle} />
-            </span>
-            <h4>
-              <ContentSdkText field={props.fields.PromoTitle} />
-            </h4>
-            <div className="mt-4 mb-6">
-              <ContentSdkRichText field={props.fields.PromoDescription} />
-            </div>
-            <ContentSdkLink field={props.fields.PromoMoreInfo} className="main-btn" />
+        )}
+
+        {(hasText(PromoSubTitle) || isEditing) && (
+          <ContentSdkText field={PromoSubTitle} tag="p" className="promo-stack-subtitle" />
+        )}
+        {(hasText(PromoTitle) || isEditing) && (
+          <ContentSdkText field={PromoTitle} tag="h2" className="promo-stack-title" />
+        )}
+        {(hasText(PromoDescription) || isEditing) && (
+          <ContentSdkRichText field={PromoDescription} className="promo-stack-description" />
+        )}
+
+        {showStores && (
+          <div className="promo-stack-stores">
+            <StoreBadgeLink field={PromoImageTwo} href={APP_STORE_HREF} isEditing={isEditing} />
+            <StoreBadgeLink field={PromoImageThree} href={GOOGLE_PLAY_HREF} isEditing={isEditing} />
           </div>
-        </div>
+        )}
       </div>
     </div>
   );

@@ -4,6 +4,7 @@ import React, { useState, useRef } from 'react';
 import { Link, TextField, useSitecore } from '@sitecore-content-sdk/nextjs';
 import { ComponentProps } from 'lib/component-props';
 import { ArrowLeft, X } from 'lucide-react';
+import { usePathname } from 'next/navigation';
 import { useClickAway } from '@/hooks/useClickAway';
 import { useStopResponsiveTransition } from '@/hooks/useStopResponsiveTransition';
 import { extractMediaUrl } from '@/helpers/extractMediaUrl';
@@ -47,16 +48,24 @@ const NavigationListItem: React.FC<NavigationListItemProps> = ({
   isSimpleLayout,
 }) => {
   const { page } = useSitecore();
+  const pathname = usePathname();
   const [isActiveLocal, setIsActiveLocal] = useState(false);
   const dropdownRef = useRef<HTMLLIElement>(null);
   useClickAway(dropdownRef, () => setIsActiveLocal(false));
 
   const isRootItem = isNavRootItem(fields);
   const isTopLevelPage = isNavLevel(fields, 1);
+  const isCurrentPage =
+    !!fields.Href &&
+    (pathname === fields.Href || (fields.Href !== '/' && pathname.startsWith(fields.Href)));
 
   const hasChildren = !!fields.Children?.length;
   const isLogoRootItem = isRootItem && logoSrc;
   const hasDropdownMenu = hasChildren && isTopLevelPage;
+  const navLabel = String(
+    fields.DisplayName || fields.NavigationTitle?.value || fields.Title?.value || ''
+  );
+  const isLoginItem = /login/i.test(navLabel) || /login/i.test(fields.Href || '');
 
   const clickHandler = (event: React.MouseEvent<HTMLElement>) => {
     handleClick(event);
@@ -85,7 +94,9 @@ const NavigationListItem: React.FC<NavigationListItemProps> = ({
         'relative flex flex-col gap-x-8 gap-y-4 xl:gap-x-14',
         isRootItem && 'lg:flex-row',
         isLogoRootItem && 'shrink-0 max-lg:hidden',
-        isLogoRootItem && isSimpleLayout && 'lg:mr-auto'
+        isLogoRootItem && isSimpleLayout && 'lg:mr-auto',
+        isCurrentPage && 'is-active',
+        isLoginItem && 'is-login'
       )}
     >
       <div className="">
@@ -100,7 +111,11 @@ const NavigationListItem: React.FC<NavigationListItemProps> = ({
               <button
                 type="button"
                 aria-label={`Open submenu for ${fields.DisplayName}`}
-                className="navigation-item navigation-item-primary"
+                className={clsx(
+                  'navigation-item navigation-item-primary',
+                  isLoginItem && 'navigation-item-login',
+                  isCurrentPage && 'is-active'
+                )}
                 onClick={(e) => {
                   e.preventDefault();
                   setIsActiveLocal((a) => !a);
@@ -141,7 +156,11 @@ const NavigationListItem: React.FC<NavigationListItemProps> = ({
             field={getLinkField(fields)}
             editable={page.mode.isEditing}
             onClick={clickHandler}
-            className="navigation-item navigation-item-primary"
+            className={clsx(
+              'navigation-item navigation-item-primary',
+              isLoginItem && 'navigation-item-login',
+              isCurrentPage && 'is-active'
+            )}
           >
             {getLinkContent(fields, logoSrc)}
           </Link>

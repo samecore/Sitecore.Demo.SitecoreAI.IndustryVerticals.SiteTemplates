@@ -1,0 +1,217 @@
+.component.footer {
+  --footer-purple: #6b42d1;
+  --footer-teal: #0ab3a1;
+  --footer-mint: #9ad071;
+  --footer-ink: #1a1a1d;
+  --footer-font: 'Roboto', 'Open Sans', sans-serif;
+  --footer-rail: 20.31%;
+
+  width: 100%;
+  background: #fff;
+  color: var(--footer-ink);
+  font-family: var(--footer-font);
+}
+
+.component.footer .footer-row-apps,
+.component.footer .footer-row-brands {
+  display: flex;
+  align-items: stretch;
+  height: 294px;
+}
+
+.component.footer .footer-purple {
+  width: var(--footer-rail);
+  flex: 0 0 var(--footer-rail);
+  background: var(--footer-purple);
+}
+
+.component.footer .footer-apps-panel {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 20px;
+  padding-right: 70px;
+  background: #fff;
+}
+
+.component.footer .footer-apps-copy {
+  margin: 0;
+  color: var(--footer-ink);
+  font-size: 18px;
+  font-weight: 400;
+  letter-spacing: 0.18px;
+}
+
+.component.footer .footer-store-badges {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.component.footer .footer-store-badge {
+  display: block;
+  overflow: visible;
+  line-height: 0;
+}
+
+.component.footer .footer-store-badge img {
+  display: block;
+  width: auto;
+  height: 60px;
+  object-fit: contain;
+}
+
+.component.footer .footer-brand-left {
+  display: flex;
+  width: var(--footer-rail);
+  flex: 0 0 var(--footer-rail);
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+}
+
+.component.footer .footer-brand-left img {
+  display: block;
+  width: 140px !important;
+  height: auto !important;
+  max-width: 140px;
+}
+
+.component.footer .footer-brand-right {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 70px;
+  background: linear-gradient(91.9deg, var(--footer-mint) 5.1%, var(--footer-teal) 49.24%);
+}
+
+.component.footer .footer-brand-right img {
+  display: block;
+  width: 250px !important;
+  height: 114px !important;
+  max-width: 250px;
+  object-fit: contain;
+}
+
+.component.footer .footer-meta {
+  padding: 48px 70px 48px var(--footer-rail);
+}
+
+.component.footer .footer-follow-title {
+  margin: 0 0 16px;
+  color: var(--footer-ink);
+  font-size: 16px;
+  font-weight: 400;
+}
+
+.component.footer .footer-follow .flex.space-x-4,
+.component.footer .footer-follow .social-follow {
+  gap: 16px;
+}
+
+.component.footer .footer-follow a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  background: var(--footer-teal);
+  color: #fff !important;
+}
+
+.component.footer .footer-follow svg,
+.component.footer .footer-follow .svg-inline--fa {
+  width: 14px;
+  height: 14px;
+  color: #fff !important;
+}
+
+.component.footer .footer-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  margin-top: 36px;
+}
+
+.component.footer .footer-legal {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.component.footer .footer-legal a {
+  padding: 0 10px 0 8px;
+  color: var(--footer-ink);
+  font-size: 14px;
+  font-weight: 400;
+  text-decoration: none;
+}
+
+.component.footer .footer-legal a:first-child {
+  padding-left: 0;
+}
+
+.component.footer .footer-legal a:hover {
+  color: var(--footer-teal);
+}
+
+.component.footer .footer-legal-sep {
+  color: var(--footer-ink);
+}
+
+.component.footer .footer-copyright {
+  margin: 0;
+  color: var(--footer-ink);
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.component.footer .footer-description,
+.component.footer .footer-sitecore-lists {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+}
+
+@media (max-width: 1023px) {
+  .component.footer .footer-row-apps,
+  .component.footer .footer-row-brands {
+    flex-direction: column;
+    height: auto;
+  }
+
+  .component.footer .footer-purple {
+    width: 100%;
+    flex-basis: auto;
+    min-height: 88px;
+  }
+
+  .component.footer .footer-apps-panel,
+  .component.footer .footer-brand-right {
+    align-items: flex-start;
+    padding: 32px 24px;
+  }
+
+  .component.footer .footer-brand-left {
+    width: 100%;
+    flex-basis: auto;
+    padding: 32px 24px;
+  }
+
+  .component.footer .footer-meta {
+    padding: 32px 24px 40px;
+  }
+
+  .component.footer .footer-bottom {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

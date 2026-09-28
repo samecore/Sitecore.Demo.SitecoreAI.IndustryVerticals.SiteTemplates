@@ -17,18 +17,26 @@ interface Fields {
   Description: Field<string>;
   CtaLink: LinkField;
   SecondaryCtaLink: LinkField;
+  '3rdCtaLink'?: LinkField;
 }
 
 interface HeroBannerProps extends ComponentProps {
   fields: Fields;
 }
 
+const hasCta = (link?: LinkField): boolean => {
+  const value = link?.value;
+  if (!value || typeof value !== 'object') {
+    return false;
+  }
+
+  return Boolean(value.text || value.href);
+};
+
 export const Default = ({ params, fields }: HeroBannerProps) => {
   const { page } = useSitecore();
   const { styles, RenderingIdentifier: id } = params;
   const isPageEditing = page.mode.isEditing;
-
-  const hasMedia = fields?.Video?.value?.src || fields?.Image?.value?.src;
 
   if (!fields) {
     return isPageEditing ? (
@@ -40,47 +48,53 @@ export const Default = ({ params, fields }: HeroBannerProps) => {
     );
   }
 
+  const { Image, Video, Title, Description, CtaLink, SecondaryCtaLink } = fields || {};
+  const thirdCta = fields?.['3rdCtaLink'];
+  const ctas = [CtaLink, SecondaryCtaLink, thirdCta].filter((link): link is LinkField =>
+    Boolean(link && (isPageEditing || hasCta(link)))
+  );
+
   return (
-    <div className={`component hero-banner relative flex items-center py-24 ${styles}`} id={id}>
-      {/* Background Media */}
-      <div className="absolute inset-0 z-1">
-        {!isPageEditing && fields?.Video?.value?.src ? (
+    <div className={`component hero-banner ${styles}`} id={id}>
+      <div className="hero-banner-media">
+        {!isPageEditing && Video?.value?.src ? (
           <video
-            className="h-full w-full object-cover"
+            className="hero-banner-media-asset"
             autoPlay
             muted
             loop
             playsInline
-            poster={fields.Image?.value?.src}
+            poster={Image?.value?.src}
           >
-            <source src={fields.Video?.value?.src} type="video/webm" />
+            <source src={Video?.value?.src} type="video/webm" />
           </video>
         ) : (
-          <ContentSdkImage field={fields.Image} className="h-full w-full object-cover" priority />
+          (Image?.value?.src || isPageEditing) && (
+            <ContentSdkImage field={Image} className="hero-banner-media-asset" priority />
+          )
         )}
       </div>
-      {/* Gradient Overlay using primary color */}
-      <div className="from-accent-dark to-accent absolute inset-0 z-0 bg-linear-to-r"></div>
+      <div className="hero-banner-shade" aria-hidden="true" />
 
-      {/* Content Container */}
-      <div className="relative z-3 container mx-auto flex flex-col items-center justify-center">
-        {/* Title - styled in accent/primary color */}
-        <h1 className={`${hasMedia ? 'text-accent' : 'text-background'} text-center`}>
-          <ContentSdkText field={fields.Title} />
-        </h1>
-
-        {/* Description/Tagline - white text */}
-        <div className="**:text-background mt-4 max-w-2xl text-xl **:text-center">
-          <ContentSdkRichText field={fields.Description} />
-        </div>
-
-        {/* CTA Buttons */}
-        {(fields?.CtaLink || fields?.SecondaryCtaLink) && (
-          <div className="mt-8 flex flex-wrap justify-center gap-4">
-            {fields?.CtaLink && <Link field={fields.CtaLink} className="main-btn" />}
-            {fields?.SecondaryCtaLink && (
-              <Link field={fields.SecondaryCtaLink} className="secondary-btn" />
-            )}
+      <div className="hero-banner-content">
+        {(Title?.value || isPageEditing) && (
+          <h1 className="hero-banner-title">
+            <ContentSdkText field={Title} />
+          </h1>
+        )}
+        {(Description?.value || isPageEditing) && (
+          <div className="hero-banner-subtitle">
+            <ContentSdkRichText field={Description} />
+          </div>
+        )}
+        {ctas.length > 0 && (
+          <div className="hero-banner-ctas">
+            {ctas.map((link, index) => (
+              <Link key={`hero-cta-${index}`} field={link} className="hero-banner-cta">
+                <span className="hero-banner-cta-label">{link.value?.text}</span>
+                <span className="hero-banner-cta-icon" aria-hidden="true" />
+              </Link>
+            ))}
           </div>
         )}
       </div>

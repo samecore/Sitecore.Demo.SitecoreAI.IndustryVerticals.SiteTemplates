@@ -1,0 +1,256 @@
+.component.promo {
+  --promo-display: 'Oswald', 'Roboto', sans-serif;
+  --promo-ui: 'Roboto', 'Open Sans', sans-serif;
+  --promo-ink: #1a1a1d;
+
+  width: 100%;
+}
+
+.component.promo:not(.promo-stacked) {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  overflow: hidden;
+  min-height: 620px;
+  background: linear-gradient(91.9deg, rgb(154, 208, 113) 5.1%, rgb(10, 179, 161) 49.24%);
+}
+
+.component.promo:not(.promo-stacked) .promo-media {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.component.promo:not(.promo-stacked) .promo-media-asset,
+.component.promo:not(.promo-stacked) .promo-media img,
+.component.promo:not(.promo-stacked) .promo-media span,
+.component.promo:not(.promo-stacked) .promo-media picture {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.component.promo:not(.promo-stacked) .promo-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 32px;
+  width: 100%;
+  max-width: 36rem;
+  min-height: 620px;
+  padding: 70px;
+}
+
+.component.promo:not(.promo-stacked) .promo-subtitle {
+  margin: 0;
+  max-width: 8.5em;
+  color: #fff;
+  font-family: var(--promo-display);
+  font-size: clamp(1.5rem, 2.3vw, 2.0625rem);
+  font-weight: 400;
+  letter-spacing: 0.33px;
+  line-height: 0.95;
+  text-transform: uppercase;
+}
+
+.component.promo:not(.promo-stacked) .promo-main {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.component.promo:not(.promo-stacked) .promo-title {
+  margin: 0;
+  color: #fff;
+  font-family: var(--promo-display);
+  font-size: clamp(1.5rem, 2.3vw, 2.0625rem);
+  font-weight: 400;
+  letter-spacing: 0.33px;
+  line-height: 0.95;
+  text-transform: uppercase;
+}
+
+.component.promo:not(.promo-stacked) .promo-description,
+.component.promo:not(.promo-stacked) .promo-description .ck-content {
+  margin: 0;
+  color: #fff;
+  font-family: var(--promo-display);
+}
+
+.component.promo:not(.promo-stacked) .promo-description p,
+.component.promo:not(.promo-stacked) .promo-description .ck-content p {
+  margin: 0;
+  color: #fff;
+  font-family: var(--promo-display);
+  font-size: clamp(2rem, 4.2vw, 3.75rem);
+  font-weight: 400;
+  letter-spacing: -0.6px;
+  line-height: 0.9;
+  text-transform: uppercase;
+}
+
+.component.promo:not(.promo-stacked) .promo-description ul,
+.component.promo:not(.promo-stacked) .promo-description .ck-content ul {
+  margin: 12px 0 0;
+  padding-left: 1.2em;
+}
+
+.component.promo:not(.promo-stacked) .promo-description li,
+.component.promo:not(.promo-stacked) .promo-description li p,
+.component.promo:not(.promo-stacked) .promo-description .ck-content li,
+.component.promo:not(.promo-stacked) .promo-description .ck-content li p {
+  margin: 0 0 8px;
+  color: #fff;
+  font-family: var(--promo-ui);
+  font-size: 1rem;
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: 1.4;
+  text-transform: none;
+}
+
+.component.promo:not(.promo-stacked) .promo-app {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.component.promo:not(.promo-stacked) .promo-app-title {
+  margin: 0 0 20px;
+  color: #fff;
+  font-family: var(--promo-ui);
+  font-size: 18px;
+  font-weight: 400;
+  letter-spacing: 0.18px;
+  line-height: 1.6;
+}
+
+.component.promo:not(.promo-stacked) .promo-app-stores {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.component.promo .promo-store-link {
+  display: block;
+  overflow: visible;
+  line-height: 0;
+  background: transparent;
+  cursor: pointer;
+  transition: filter 0.2s ease;
+}
+
+.component.promo .promo-store-link:hover,
+.component.promo .promo-store-link:focus-visible {
+  filter: brightness(0.82);
+}
+
+.component.promo .promo-store-badge,
+.component.promo .promo-store-badge img,
+.component.promo .promo-store-badge span,
+.component.promo .promo-store-badge picture {
+  display: block;
+  width: auto;
+  height: 60px;
+  max-width: none;
+  object-fit: contain;
+}
+
+.component.promo.promo-stacked {
+  display: flex;
+  justify-content: center;
+  background: #fff;
+}
+
+.component.promo.promo-stacked .promo-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  max-width: 48rem;
+  padding: 48px 24px;
+  text-align: center;
+}
+
+.component.promo.promo-stacked .promo-stack-image {
+  width: 100%;
+}
+
+.component.promo.promo-stacked .promo-stack-image-asset,
+.component.promo.promo-stacked .promo-stack-image img,
+.component.promo.promo-stacked .promo-stack-image span,
+.component.promo.promo-stacked .promo-stack-image picture {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 28rem;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+.component.promo.promo-stacked .promo-stack-subtitle {
+  margin: 8px 0 0;
+  color: var(--promo-ink);
+  font-family: var(--promo-display);
+  font-size: 0.85rem;
+  font-weight: 400;
+  letter-spacing: 0.16em;
+  line-height: 1.3;
+  text-transform: uppercase;
+}
+
+.component.promo.promo-stacked .promo-stack-title {
+  margin: 0;
+  color: var(--promo-ink);
+  font-family: var(--promo-display);
+  font-size: clamp(1.5rem, 3vw, 2.25rem);
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: 1.15;
+  text-transform: uppercase;
+}
+
+.component.promo.promo-stacked .promo-stack-description,
+.component.promo.promo-stacked .promo-stack-description p,
+.component.promo.promo-stacked .promo-stack-description .ck-content,
+.component.promo.promo-stacked .promo-stack-description .ck-content p {
+  margin: 0;
+  color: var(--promo-ink);
+  font-family: var(--promo-ui);
+  font-size: 1.125rem;
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: 1.5;
+  text-align: center;
+}
+
+.component.promo.promo-stacked .promo-stack-stores {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+@media (max-width: 767px) {
+  .component.promo:not(.promo-stacked),
+  .component.promo:not(.promo-stacked) .promo-content {
+    min-height: 480px;
+  }
+
+  .component.promo:not(.promo-stacked) .promo-content {
+    max-width: none;
+    padding: 40px 24px;
+  }
+
+  .component.promo.promo-stacked .promo-stack {
+    padding: 32px 20px;
+  }
+}

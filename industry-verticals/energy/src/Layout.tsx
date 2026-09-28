@@ -7,6 +7,7 @@ import { Placeholder, Field, Page, ImageField } from '@sitecore-content-sdk/next
 import Scripts from 'src/Scripts';
 import SitecoreStyles from 'src/components/content-sdk/SitecoreStyles';
 import { DesignLibraryLayout } from './DesignLibraryLayout';
+import { GuestIdWidget } from 'src/components/non-sitecore/GuestIdWidget';
 import { useRouter } from 'next/router';
 
 interface LayoutProps {
@@ -79,6 +80,7 @@ const Layout = ({ page }: LayoutProps): JSX.Element => {
                 {route && <Placeholder name="headless-footer" rendering={route} />}
               </div>
             </footer>
+            <GuestIdWidget />
           </>
         )}
       </div>

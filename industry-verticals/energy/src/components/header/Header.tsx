@@ -15,9 +15,9 @@ export type HeaderProps = ComponentProps & {
 
 const UTILITY_ITEMS = [
   { id: 'residential', label: 'Residential', active: true },
-  { id: 'business', label: 'Business' },
-  { id: 'partners', label: 'Partners' },
-  { id: 'group', label: 'TAQA Group' },
+  { id: 'business', label: 'Business', active: false },
+  { id: 'partners', label: 'Partners', active: false },
+  { id: 'group', label: 'TAQA Group', active: false },
 ] as const;
 
 /**

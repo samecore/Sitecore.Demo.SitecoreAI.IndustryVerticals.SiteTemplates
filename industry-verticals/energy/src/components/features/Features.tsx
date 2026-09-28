@@ -101,7 +101,7 @@ const DefaultFeatureItem = ({
           )}
           {(link?.value?.href || link?.value?.text || isEditing) && (
             <div className="features-default-item-action">
-              <ContentSdkLink field={link} className="outline-btn" />
+              <ContentSdkLink field={link ?? { value: { href: '' } }} className="outline-btn" />
             </div>
           )}
         </div>

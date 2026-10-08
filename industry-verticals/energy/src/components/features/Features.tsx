@@ -3,12 +3,14 @@
 import { IGQLImageField, IGQLRichTextField, IGQLTextField, IGQLLinkField } from 'src/types/igql';
 import {
   Text as ContentSdkText,
+  RichText as ContentSdkRichText,
   NextImage as ContentSdkImage,
   Link as ContentSdkLink,
   withDatasourceCheck,
   ComponentRendering,
   ComponentParams,
 } from '@sitecore-content-sdk/nextjs';
+import { TrendingUp } from 'lucide-react';
 
 interface Fields {
   data: {
@@ -69,28 +71,30 @@ const FeatureItem = ({
     );
   }
 
-  // Default variant: vertical layout with icon on left
+  const hasImage = !!feature?.featureImage?.jsonValue?.value?.src;
+
   return (
-    <li
-      key={feature?.id}
-      className="border-border bg-background flex flex-col gap-4 rounded-lg border p-6"
-    >
-      <div className="flex items-start gap-4">
-        <div className="flex h-16 w-16 shrink-0 items-center justify-center">
+    <li key={feature?.id} className="flex flex-col items-center px-2 text-center">
+      <div className="bg-accent/10 mb-4 flex size-12 items-center justify-center rounded-full">
+        {hasImage ? (
           <ContentSdkImage
             field={feature?.featureImage?.jsonValue}
-            className="h-full w-full object-contain"
+            className="size-6 object-contain"
           />
-        </div>
-        <div className="flex-1">
-          <h5 className="mb-2 text-base font-semibold">
-            <ContentSdkText field={feature?.featureTitle?.jsonValue} />
-          </h5>
-          <p className="text-foreground-light">
-            <ContentSdkText field={feature?.featureDescription?.jsonValue} />
-          </p>
-        </div>
+        ) : (
+          <TrendingUp className="text-accent size-5" aria-hidden="true" />
+        )}
       </div>
+      <ContentSdkText
+        tag="p"
+        className="text-accent text-3xl leading-none font-semibold tracking-tight"
+        field={feature?.featureTitle?.jsonValue}
+      />
+      <ContentSdkText
+        tag="p"
+        className="text-foreground-light mt-3 text-sm leading-snug"
+        field={feature?.featureDescription?.jsonValue}
+      />
     </li>
   );
 };
@@ -102,11 +106,15 @@ const DefaultFeatures = ({ fields, params }: FeaturesProps) => {
   return (
     <section className={`relative py-10 lg:py-16 ${params?.styles || ''}`} id={id || undefined}>
       <div className="container">
-        <h2 className="mb-4 text-center text-3xl font-bold">
+        <h2 className="mb-2 text-left text-3xl leading-tight font-bold">
           <ContentSdkText field={fields?.data?.datasource?.title?.jsonValue} />
         </h2>
+        <ContentSdkRichText
+          className="text-foreground-light max-w-2xl text-base"
+          field={fields?.data?.datasource?.description?.jsonValue}
+        />
 
-        <ul className="mt-12 grid gap-6 lg:grid-cols-2">
+        <ul className="mt-12 grid grid-cols-2 gap-x-6 gap-y-10 sm:grid-cols-3 lg:grid-cols-5">
           {features?.map((feature) => (
             <FeatureItem key={feature.id} feature={feature} layout="vertical" />
           ))}

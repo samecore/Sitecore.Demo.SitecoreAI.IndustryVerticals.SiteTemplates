@@ -1,0 +1,141 @@
+.site-footer {
+  background: #146b45;
+  color: #fff;
+}
+
+.site-footer-main {
+  padding-block: 3rem 2.5rem;
+}
+
+.site-footer-grid {
+  display: grid;
+  gap: 2.5rem 2rem;
+}
+
+.site-footer-heading {
+  margin-bottom: 1.25rem;
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.site-footer .link-list h1,
+.site-footer .link-list h2,
+.site-footer .link-list h3,
+.site-footer .link-list h4,
+.site-footer .link-list h5,
+.site-footer .link-list h6 {
+  display: none;
+}
+
+.site-footer .link-list ul {
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.site-footer .link-list a {
+  color: rgb(255 255 255 / 92%);
+  font-size: 0.95rem;
+  line-height: 1.5;
+  text-decoration: none;
+}
+
+.site-footer .link-list a:hover {
+  text-decoration: underline;
+}
+
+.site-footer .social-follow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.site-footer .social-follow a {
+  display: flex;
+  width: 2.25rem;
+  height: 2.25rem;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgb(255 255 255 / 85%);
+  border-radius: 0.4rem;
+  color: #fff;
+}
+
+.site-footer .social-follow a:hover {
+  background: rgb(255 255 255 / 12%);
+}
+
+.site-footer .social-follow svg {
+  width: 0.9rem;
+  height: 0.9rem;
+  color: #fff;
+}
+
+.site-footer-bar {
+  background: #0f5c3a;
+  padding-block: 1.25rem;
+}
+
+.site-footer-bar-row {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.site-footer-legal,
+.site-footer-legal p,
+.site-footer-legal a {
+  color: rgb(255 255 255 / 90%);
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+
+.site-footer-legal p {
+  margin: 0;
+}
+
+.site-footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.25rem;
+  margin-top: 0.5rem;
+}
+
+.site-footer-links a {
+  text-decoration: none;
+}
+
+.site-footer-links a:hover {
+  text-decoration: underline;
+}
+
+.site-footer-logo {
+  width: auto;
+  max-width: 10rem;
+  height: 3rem;
+  object-fit: contain;
+  object-position: left center;
+}
+
+@media (min-width: 768px) {
+  .site-footer-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .site-footer-bar-row {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .site-footer-logo {
+    object-position: right center;
+  }
+}
+
+@media (min-width: 1024px) {
+  .site-footer-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}

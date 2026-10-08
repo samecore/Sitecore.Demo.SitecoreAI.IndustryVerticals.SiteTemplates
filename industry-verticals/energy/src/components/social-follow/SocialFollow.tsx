@@ -37,15 +37,14 @@ export const Default = (props: SocialFollowProps) => {
   ];
 
   return (
-    <div className="flex space-x-4" id={id}>
-      {socialLinks.map(({ icon, field, key }) => (
-        <ContentSdkLink field={field} key={key}>
-          <FontAwesomeIcon
-            icon={icon}
-            className="text-accent-light hover:text-background h-5 w-5 cursor-pointer"
-          />
-        </ContentSdkLink>
-      ))}
+    <div className="component social-follow flex flex-wrap gap-2" id={id}>
+      {socialLinks
+        .filter(({ field }) => field?.value?.href)
+        .map(({ icon, field, key }) => (
+          <ContentSdkLink field={field} key={key} aria-label={key}>
+            <FontAwesomeIcon icon={icon} className="h-4 w-4" />
+          </ContentSdkLink>
+        ))}
     </div>
   );
 };

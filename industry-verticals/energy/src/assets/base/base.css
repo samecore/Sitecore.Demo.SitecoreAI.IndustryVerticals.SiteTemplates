@@ -4,7 +4,7 @@
   }
 
   body {
-    @apply font-body text-foreground bg-background text-base;
+    @apply font-body text-foreground bg-background-muted text-base;
   }
 
   h1,

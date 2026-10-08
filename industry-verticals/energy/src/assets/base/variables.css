@@ -1,21 +1,21 @@
 @theme {
-  --color-foreground: #111828;
-  --color-foreground-light: #4a5565;
-  --color-foreground-muted: #384354;
-  --color-foreground-secondary: #99a1af;
+  --color-foreground: #161616;
+  --color-foreground-light: #384250;
+  --color-foreground-muted: #6c737f;
+  --color-foreground-secondary: #9da4ae;
 
   --color-background: #fff;
-  --color-background-accent: #dbf3f5;
-  --color-background-muted: #f5f5f5;
+  --color-background-accent: #e8f6ef;
+  --color-background-muted: #f9fafb;
 
-  --color-accent: #3cbed1;
-  --color-accent-dark: #228091;
+  --color-accent: #1b8354;
+  --color-accent-dark: #166a45;
 
-  --color-success: #2ec1ac;
+  --color-success: #1b8354;
   --color-warning: #f5a623;
   --color-danger: #e7000b;
 
-  --color-border: #e5e5e5;
+  --color-border: #e5e7eb;
 
   --font-heading: 'IBM Plex Sans Arabic', system-ui, sans-serif;
   --font-body: 'IBM Plex Sans Arabic', system-ui, sans-serif;

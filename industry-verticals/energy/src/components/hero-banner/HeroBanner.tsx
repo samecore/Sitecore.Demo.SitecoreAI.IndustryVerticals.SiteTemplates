@@ -59,28 +59,37 @@ export const Default = ({ params, fields }: HeroBannerProps) => {
           <ContentSdkImage field={fields.Image} className="h-full w-full object-cover" priority />
         )}
       </div>
-      {/* Gradient Overlay using primary color */}
-      <div className="from-accent-dark to-accent absolute inset-0 z-0 bg-linear-to-r"></div>
+      <div className="absolute inset-0 z-2 bg-linear-to-r from-[#0e1621]/75 via-[#0e1621]/40 to-[#0e1621]/10" />
 
       {/* Content Container */}
       <div className="relative z-3 container mx-auto flex flex-col items-center justify-center">
-        {/* Title - styled in accent/primary color */}
-        <h1 className={`${hasMedia ? 'text-accent' : 'text-background'} text-center`}>
+        <h1 className={`${hasMedia ? 'text-white' : 'text-foreground'} text-center`}>
           <ContentSdkText field={fields.Title} />
         </h1>
 
-        {/* Description/Tagline - white text */}
-        <div className="**:text-background mt-4 max-w-2xl text-xl **:text-center">
+        <div
+          className={`mt-4 max-w-2xl text-xl **:text-center ${hasMedia ? 'text-white/90 **:text-white/90' : 'text-foreground-light'}`}
+        >
           <ContentSdkRichText field={fields.Description} />
         </div>
 
-        {/* CTA Buttons */}
-        {(fields?.CtaLink || fields?.SecondaryCtaLink) && (
+        {(fields?.CtaLink?.value?.href ||
+          fields?.SecondaryCtaLink?.value?.href ||
+          isPageEditing) && (
           <div className="mt-8 flex flex-wrap justify-center gap-4">
-            {fields?.CtaLink && <Link field={fields.CtaLink} className="main-btn" />}
-            {fields?.SecondaryCtaLink && (
-              <Link field={fields.SecondaryCtaLink} className="secondary-btn" />
+            {(fields?.CtaLink?.value?.href || isPageEditing) && fields?.CtaLink && (
+              <Link
+                field={fields.CtaLink}
+                className="inline-flex items-center rounded-lg bg-white px-5 py-3 text-base font-medium text-[#161616] no-underline shadow-sm transition hover:bg-neutral-100"
+              />
             )}
+            {(fields?.SecondaryCtaLink?.value?.href || isPageEditing) &&
+              fields?.SecondaryCtaLink && (
+                <Link
+                  field={fields.SecondaryCtaLink}
+                  className="inline-flex items-center rounded-lg bg-white px-5 py-3 text-base font-medium text-[#161616] no-underline shadow-sm transition hover:bg-neutral-100"
+                />
+              )}
           </div>
         )}
       </div>
